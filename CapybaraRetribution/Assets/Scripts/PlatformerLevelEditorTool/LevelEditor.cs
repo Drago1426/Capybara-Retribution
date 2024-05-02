@@ -1,53 +1,102 @@
-namespace PlatformerLevelEditor
+namespace PlatformerLevelEditorTool
 {
     using UnityEditor;
     using UnityEngine;
+    using UnityEngine.Tilemaps;
+    using UnityEditor.EditorTools;
+
+    // Define a custom editor tool for drawing on the tilemap
+    [EditorTool("Tilemap Draw Tool", typeof(Tilemap))]
+    public class TilemapDrawTool : EditorTool
+    {
+        private Tilemap tilemap;
+        private Tile selectedTile;
+
+        // Store the reference to the selected tile from the LevelEditor
+        public static Tile ActiveTile { get; set; }
+
+        public override void OnActivated()
+        {
+            tilemap = target as Tilemap;
+        }
+
+        public override void OnToolGUI(EditorWindow window)
+        {
+            selectedTile = ActiveTile;
+            HandleUtility.AddDefaultControl(GUIUtility.GetControlID(FocusType.Passive));
+            Event e = Event.current;
+
+            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0) // Left click to place tile
+            {
+                Vector3 point = HandleUtility.GUIPointToWorldRay(e.mousePosition).origin;
+                Vector3Int cellPosition = tilemap.WorldToCell(point);
+                tilemap.SetTile(cellPosition, selectedTile);
+                e.Use();
+            }
+            if ((e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 1) // Right click to remove tile
+            {
+                Vector3 point = HandleUtility.GUIPointToWorldRay(e.mousePosition).origin;
+                Vector3Int cellPosition = tilemap.WorldToCell(point);
+                tilemap.SetTile(cellPosition, null);
+                e.Use();
+            }
+        }
+    }
 
     public class LevelEditor : EditorWindow
     {
-        
         [MenuItem("Window/Level Editor")]
         public static void ShowWindow()
         {
             GetWindow<LevelEditor>("Level Editor");
         }
 
-        private string[] items = new string[] { "Platform", "Trap", "Enemy" };
+        private string[] items = new string[] { "Platform", "Trap", "Enemy", "Tile" };
         private int selectedItemIndex = 0;
         private Sprite selectedSprite;
+        private Tilemap tilemap;
+        private Tile selectedTile;
 
         // Customization variables
         private Texture2D backgroundTexture;
-        private Color platformColor = Color.white;
         private GameObject decorativePrefab;
-        private Vector2 backgroundSize = new Vector2(10, 5); // Default size of the background
+
+        private void OnEnable()
+        {
+            tilemap = FindObjectOfType<Tilemap>();
+            if (tilemap == null)
+            {
+                Debug.LogWarning("No Tilemap found in the scene.");
+            }
+        }
 
         private void OnGUI()
         {
+            GUIStyle headerStyle = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter };
+            GUILayout.Label("Platformer Level Editor Tool", headerStyle);
+
+            GUILayout.Space(10); // Adds a bit of spacing after the header
+            
             GUILayout.Label("Select an item to place", EditorStyles.boldLabel);
-            
-            // Item placement section
             selectedItemIndex = EditorGUILayout.Popup("Item Type", selectedItemIndex, items);
-            selectedSprite = EditorGUILayout.ObjectField("Select Sprite", selectedSprite, typeof(Sprite), false) as Sprite;
-            if (GUILayout.Button("Add Item"))
+
+            if (selectedItemIndex == 3) // Tiles
             {
-                CreateGameObjectWithSprite();
+                selectedTile = EditorGUILayout.ObjectField("Select Tile", selectedTile, typeof(Tile), false) as Tile;
+                TilemapDrawTool.ActiveTile = selectedTile; // Update the active tile for the draw tool
+
+                if (GUILayout.Button("Activate Draw Tool"))
+                {
+                    ToolManager.SetActiveTool<TilemapDrawTool>();
+                }
             }
-
-            // Divider
-            GUILayout.Space(20);
-            GUILayout.Label("Level Customization", EditorStyles.boldLabel);
-
-            // Level Customizer section
-            backgroundTexture = EditorGUILayout.ObjectField("Background", backgroundTexture, typeof(Texture2D), false) as Texture2D;
-            
-            // Background size input fields
-            backgroundSize = EditorGUILayout.Vector2Field("Background Size", backgroundSize);
-
-            // Button to create a background with specific size
-            if (GUILayout.Button("Create Background"))
+            else
             {
-                CreateBackground();
+                selectedSprite = EditorGUILayout.ObjectField("Select Sprite", selectedSprite, typeof(Sprite), false) as Sprite;
+                if (GUILayout.Button("Add Item"))
+                {
+                    CreateGameObjectWithSprite();
+                }
             }
         }
 
@@ -61,7 +110,7 @@ namespace PlatformerLevelEditor
                 newObject.tag = items[selectedItemIndex];
 
                 // Add a BoxCollider2D if it's a platform
-                if (newObject.tag == "Platform")
+                if (newObject.CompareTag("Platform"))
                 {
                     newObject.AddComponent<BoxCollider2D>();
                 }
@@ -69,20 +118,5 @@ namespace PlatformerLevelEditor
                 Debug.Log("Added: " + newObject.name + " with tag: " + newObject.tag);
             }
         }
-
-        void CreateBackground()
-        {
-            if (backgroundTexture)
-            {
-                GameObject backgroundObject = GameObject.Find("Background") ?? new GameObject("Background");
-                SpriteRenderer renderer = backgroundObject.GetComponent<SpriteRenderer>() ?? backgroundObject.AddComponent<SpriteRenderer>();
-                renderer.sprite = Sprite.Create(backgroundTexture, new Rect(0.0f, 0.0f, backgroundTexture.width, backgroundTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
-                renderer.size = backgroundSize; // Set the size of the sprite
-                renderer.sortingLayerName = "Background";
-                backgroundObject.transform.localScale = Vector3.one; // Set scale to 1 for consistency
-                Debug.Log("Background created with size: " + backgroundSize);
-            }
-        }
     }
 }
-
