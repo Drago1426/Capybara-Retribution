@@ -1,6 +1,6 @@
 ﻿using UnityEngine;
 
-[CreateAssetMenu(fileName = "EyeColor", menuName = "Character Creator/EyeColor")]
+[CreateAssetMenu(fileName = "EyeColor", menuName = "Customization/EyeColor")]
 public class EyeColor : ScriptableObject
 {
     public Color color;
