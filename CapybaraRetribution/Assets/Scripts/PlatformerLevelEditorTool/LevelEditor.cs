@@ -48,7 +48,7 @@ namespace PlatformerLevelEditorTool
         [MenuItem("Window/Level Editor")]
         public static void ShowWindow()
         {
-            GetWindow<LevelEditor>("Level Editor");
+            GetWindow<LevelEditor>("Platformer Level Editor Tool");
         }
 
         private string[] items = new string[] { "Platform", "Trap", "Enemy", "Tile" };
@@ -57,18 +57,29 @@ namespace PlatformerLevelEditorTool
         private Tilemap tilemap;
         private Tile selectedTile;
 
-        // Customization variables
-        private Texture2D backgroundTexture;
-        private GameObject decorativePrefab;
+        // Background Sprites
+        private Sprite morningBackground;
+        private Sprite noonBackground;
+        private Sprite nightBackground;
+        private GameObject currentBackground;
 
         private void OnEnable()
         {
             tilemap = FindObjectOfType<Tilemap>();
+            LoadBackgrounds();
             if (tilemap == null)
             {
                 Debug.LogWarning("No Tilemap found in the scene.");
             }
         }
+        
+        private void LoadBackgrounds()
+        {
+            morningBackground = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Morning.png");
+            noonBackground = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Noon.png");
+            nightBackground = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Night.png");
+        }
+
 
         private void OnGUI()
         {
@@ -98,6 +109,33 @@ namespace PlatformerLevelEditorTool
                     CreateGameObjectWithSprite();
                 }
             }
+            
+            GUILayout.Space(10);
+            GUILayout.Label("Background Settings", EditorStyles.boldLabel);
+            if (GUILayout.Button("Morning"))
+            {
+                SetBackground(morningBackground);
+            }
+            if (GUILayout.Button("Noon"))
+            {
+                SetBackground(noonBackground);
+            }
+            if (GUILayout.Button("Night"))
+            {
+                SetBackground(nightBackground);
+            }
+        }
+        
+        void SetBackground(Sprite newBackground)
+        {
+            if (currentBackground != null)
+            {
+                DestroyImmediate(currentBackground);
+            }
+            currentBackground = new GameObject("Background");
+            var renderer = currentBackground.AddComponent<SpriteRenderer>();
+            renderer.sprite = newBackground;
+            renderer.sortingLayerName = "Background"; // Ensure this layer is behind all game objects
         }
 
         void CreateGameObjectWithSprite()
