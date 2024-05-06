@@ -42,6 +42,7 @@ namespace PlatformerLevelEditorTool
             }
         }
     }
+    
 
     public class LevelEditor : EditorWindow
     {
@@ -51,17 +52,18 @@ namespace PlatformerLevelEditorTool
             GetWindow<LevelEditor>("Platformer Level Editor Tool");
         }
 
-        private string[] items = new string[] { "Platform", "Trap", "Enemy", "Tile" };
+        private string[] items = new string[] { "Trap", "Enemy", "Tile" };
         private int selectedItemIndex = 0;
         private Sprite selectedSprite;
         private Tilemap tilemap;
         private Tile selectedTile;
 
-        // Background Sprites
-        private Sprite morningBackground;
-        private Sprite noonBackground;
-        private Sprite nightBackground;
+        // Background settings
+        private string[] backgroundOptions = new string[] { "Morning", "Noon", "Night" };
+        private int selectedBackgroundIndex = 0; // Default to 'Morning'
+        private Sprite[] backgrounds = new Sprite[3];
         private GameObject currentBackground;
+        
 
         private void OnEnable()
         {
@@ -75,9 +77,9 @@ namespace PlatformerLevelEditorTool
         
         private void LoadBackgrounds()
         {
-            morningBackground = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Morning.png");
-            noonBackground = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Noon.png");
-            nightBackground = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Night.png");
+            backgrounds[0] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Morning.png");
+            backgrounds[1] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Noon.png");
+            backgrounds[2] = AssetDatabase.LoadAssetAtPath<Sprite>("Assets/Resources/Backgrounds/Night.png");
         }
 
 
@@ -91,7 +93,7 @@ namespace PlatformerLevelEditorTool
             GUILayout.Label("Select an item to place", EditorStyles.boldLabel);
             selectedItemIndex = EditorGUILayout.Popup("Item Type", selectedItemIndex, items);
 
-            if (selectedItemIndex == 3) // Tiles
+            if (selectedItemIndex == 2) // Tiles
             {
                 selectedTile = EditorGUILayout.ObjectField("Select Tile", selectedTile, typeof(Tile), false) as Tile;
                 TilemapDrawTool.ActiveTile = selectedTile; // Update the active tile for the draw tool
@@ -112,32 +114,28 @@ namespace PlatformerLevelEditorTool
             
             GUILayout.Space(10);
             GUILayout.Label("Background Settings", EditorStyles.boldLabel);
-            if (GUILayout.Button("Morning"))
+
+            // Dropdown for selecting the background
+            selectedBackgroundIndex = EditorGUILayout.Popup("Select Background", selectedBackgroundIndex, backgroundOptions);
+
+            // Button to apply the selected background
+            if (GUILayout.Button("Apply Background"))
             {
-                SetBackground(morningBackground);
+                ApplyBackgroundChange();
             }
-            if (GUILayout.Button("Noon"))
-            {
-                SetBackground(noonBackground);
-            }
-            if (GUILayout.Button("Night"))
-            {
-                SetBackground(nightBackground);
-            }
-        }
-        
-        void SetBackground(Sprite newBackground)
-        {
-            if (currentBackground != null)
-            {
-                DestroyImmediate(currentBackground);
-            }
-            currentBackground = new GameObject("Background");
-            var renderer = currentBackground.AddComponent<SpriteRenderer>();
-            renderer.sprite = newBackground;
-            renderer.sortingLayerName = "Background"; // Ensure this layer is behind all game objects
         }
 
+        private void ApplyBackgroundChange()
+        {
+            if (currentBackground != null) DestroyImmediate(currentBackground);
+    
+            currentBackground = new GameObject("Dynamic Background");
+            var renderer = currentBackground.AddComponent<SpriteRenderer>();
+            renderer.sprite = backgrounds[selectedBackgroundIndex];
+            renderer.sortingLayerName = "Background"; // Ensure it renders behind other objects
+            renderer.sortingOrder = -10;
+        }
+        
         void CreateGameObjectWithSprite()
         {
             if (selectedSprite != null)
@@ -147,14 +145,36 @@ namespace PlatformerLevelEditorTool
                 renderer.sprite = selectedSprite;
                 newObject.tag = items[selectedItemIndex];
 
-                // Add a BoxCollider2D if it's a platform
-                if (newObject.CompareTag("Platform"))
+                // Add components based on the type of the object
+                switch (newObject.tag)
                 {
-                    newObject.AddComponent<BoxCollider2D>();
+                    case "Trap":
+                        SetupTrap(newObject);
+                        break;
+                    case "Enemy":
+                        SetupEnemy(newObject);
+                        break;
                 }
 
                 Debug.Log("Added: " + newObject.name + " with tag: " + newObject.tag);
             }
+        }
+
+        void SetupTrap(GameObject trap)
+        {
+            BoxCollider2D collider = trap.AddComponent<BoxCollider2D>();
+            collider.isTrigger = true;
+            trap.AddComponent<Rigidbody2D>().isKinematic = true;
+            trap.AddComponent<TrapBehavior>();
+        }
+
+        void SetupEnemy(GameObject enemy)
+        {
+            BoxCollider2D collider = enemy.AddComponent<BoxCollider2D>();
+            Rigidbody2D rb = enemy.AddComponent<Rigidbody2D>();
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Commonly enemies shouldn't rotate in 2D platformers
+            enemy.AddComponent<Animator>(); // Assuming there is an Animator component needed
+            enemy.AddComponent<EnemyController>(); // Your custom enemy controller script
         }
     }
 }

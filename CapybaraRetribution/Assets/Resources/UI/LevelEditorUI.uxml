@@ -1,0 +1,10 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" editor-extension-mode="True">
+    <ui:Label tabindex="-1" text="Platformer Level Editor Tool" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-text-align: upper-center; font-size: 20px; -unity-font-style: bold;" />
+    <ui:Label tabindex="-1" text="Select an item to place" parse-escape-sequences="true" display-tooltip-when-elided="true" style="-unity-font-style: bold; margin-top: 20px;" />
+    <ui:DropdownField label="Item Type" choices="Trap, Enemy, Tile" />
+    <uie:ObjectField label="Select Sprite" type="UnityEngine.Sprite, UnityEngine.CoreModule" />
+    <ui:Button text="Add Item" parse-escape-sequences="true" display-tooltip-when-elided="true" />
+    <ui:Label tabindex="-1" text="Background Settings" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 20px; -unity-font-style: bold;" />
+    <ui:DropdownField label="Select Time of Day" choices="Morning, Noon, Night" />
+    <ui:Button text="Change Time" parse-escape-sequences="true" display-tooltip-when-elided="true" style="margin-top: 10px;" />
+</ui:UXML>
