@@ -1,0 +1,19 @@
+fileFormatVersion: 2
+guid: 3b5c8e80ed98445e8837a79653c99491
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - furRenderer: {instanceID: 0}
+  - eyesRenderer: {instanceID: 0}
+  - hatRenderer: {instanceID: 0}
+  - weaponRenderer: {instanceID: 0}
+  - selectedFur: {fileID: 11400000, guid: c8c6c57109192e049bc49f02fc18a254, type: 2}
+  - selectedEyes: {fileID: 11400000, guid: d4c054294c4ae5c48b5b154b1b4c2026, type: 2}
+  - selectedHat: {fileID: 11400000, guid: b1cbcf53ee5346c4682730d66c68d913, type: 2}
+  - selectedWeapon: {fileID: 11400000, guid: aa316e4cbc7df6a4c9458206b219e0d8, type: 2}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

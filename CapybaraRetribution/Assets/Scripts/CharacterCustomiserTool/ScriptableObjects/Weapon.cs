@@ -1,15 +1,9 @@
 ﻿using UnityEngine;
 
-public enum WeaponType
-{
-    None,
-    Gun,
-    Purse
-}
-
-[CreateAssetMenu(fileName = "New Weapon", menuName = "Customization/Weapon" )]
+[CreateAssetMenu(fileName = "New Weapon", menuName = "Character/Weapon")]
 public class Weapon : ScriptableObject
 {
-    public WeaponType weaponType = WeaponType.None;
-    public GameObject weaponPrefab;
+    public string weaponName;
+    public Sprite weaponSprite;
+    public int damage;
 }
