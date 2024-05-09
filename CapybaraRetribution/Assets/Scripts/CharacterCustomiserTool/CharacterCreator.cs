@@ -130,4 +130,9 @@ public class CharacterCreator : MonoBehaviour
         hatNameText.text = selectedHat.hatName;
         weaponNameText.text = selectedWeapon.weaponName;
     }
+
+    public void UpdateCharacter(ScriptableObject eyeCollection, ScriptableObject furCollection, ScriptableObject hatCollection, ScriptableObject weaponCollection)
+    {
+        throw new System.NotImplementedException();
+    }
 }

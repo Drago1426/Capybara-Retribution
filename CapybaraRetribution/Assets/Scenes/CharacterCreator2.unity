@@ -790,7 +790,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Selected Eye
+  m_text: Blue
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f329de58e4c2f474684829b676327b6f, type: 2}
   m_sharedMaterial: {fileID: -342790762395265018, guid: f329de58e4c2f474684829b676327b6f, type: 2}
@@ -1046,7 +1046,7 @@ SpriteRenderer:
   m_SortingLayerID: 913857659
   m_SortingLayer: 1
   m_SortingOrder: 10
-  m_Sprite: {fileID: -1449350928, guid: 6a3faae17ce565e47b10fdf4223201cf, type: 3}
+  m_Sprite: {fileID: 2048356056, guid: 6a3faae17ce565e47b10fdf4223201cf, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1283,7 +1283,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Selected Fur
+  m_text: Blue
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f329de58e4c2f474684829b676327b6f, type: 2}
   m_sharedMaterial: {fileID: -342790762395265018, guid: f329de58e4c2f474684829b676327b6f, type: 2}
@@ -1509,7 +1509,7 @@ SpriteRenderer:
   m_SortingLayerID: 913857659
   m_SortingLayer: 1
   m_SortingOrder: 5
-  m_Sprite: {fileID: -1342785438, guid: a4f539bc8d5f89042bd0638a8955cdcc, type: 3}
+  m_Sprite: {fileID: -1913079358, guid: a4f539bc8d5f89042bd0638a8955cdcc, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
@@ -1695,7 +1695,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Selected Hat
+  m_text: Beret
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f329de58e4c2f474684829b676327b6f, type: 2}
   m_sharedMaterial: {fileID: -342790762395265018, guid: f329de58e4c2f474684829b676327b6f, type: 2}
@@ -1798,7 +1798,7 @@ Transform:
   m_GameObject: {fileID: 790482751}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.81, y: 0.74, z: 90.08648}
+  m_LocalPosition: {x: -1.06, y: 0.74, z: 90.08648}
   m_LocalScale: {x: 2.2231293, y: 2.2231293, z: 2.2231293}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -1832,8 +1832,8 @@ MonoBehaviour:
   eyesNameText: {fileID: 412918534}
   hatNameText: {fileID: 757280359}
   weaponNameText: {fileID: 1415330505}
-  selectedFur: {fileID: 11400000, guid: c5e081e0f5284a448ac0c13bb8c436d7, type: 2}
-  selectedEyes: {fileID: 11400000, guid: ab4f1c2395f619542b3e932c882b2828, type: 2}
+  selectedFur: {fileID: 11400000, guid: 73ed8e8110215be44aeb94ffc80ffc05, type: 2}
+  selectedEyes: {fileID: 11400000, guid: 8c2824d11d0de7f46a0c29b45fb25e8a, type: 2}
   selectedHat: {fileID: 11400000, guid: b1cbcf53ee5346c4682730d66c68d913, type: 2}
   selectedWeapon: {fileID: 11400000, guid: aa316e4cbc7df6a4c9458206b219e0d8, type: 2}
 --- !u!1 &875404974
@@ -2994,7 +2994,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: Selected Weapon
+  m_text: Glock
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: f329de58e4c2f474684829b676327b6f, type: 2}
   m_sharedMaterial: {fileID: -342790762395265018, guid: f329de58e4c2f474684829b676327b6f, type: 2}
@@ -3678,7 +3678,7 @@ SpriteRenderer:
   m_SortingLayerID: 913857659
   m_SortingLayer: 1
   m_SortingOrder: -20
-  m_Sprite: {fileID: -148408194, guid: 8a0859e0ca8cbeb47b3b1b9dd52c0c95, type: 3}
+  m_Sprite: {fileID: 1195010278, guid: 8a0859e0ca8cbeb47b3b1b9dd52c0c95, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

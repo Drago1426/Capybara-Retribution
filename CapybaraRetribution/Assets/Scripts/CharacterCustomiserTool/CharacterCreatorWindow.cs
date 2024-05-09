@@ -6,57 +6,70 @@ public class CharacterCreatorWindow : EditorWindow
 {
     private CharacterCreator characterCreator;
 
+    // Paths to your asset collections
+    private string eyeCollectionPath = "Assets/ScriptableObjects/Collections/Eye Collection.asset";
+    private string furCollectionPath = "Assets/ScriptableObjects/Collections/Fur Collection.asset";
+    private string hatCollectionPath = "Assets/ScriptableObjects/Collections/Hat Collection.asset";
+    private string weaponCollectionPath = "Assets/ScriptableObjects/Collections/Weapon Collection.asset";
+
+    // Loaded asset collections
+    private ScriptableObject EyeCollection;
+    private ScriptableObject FurCollection;
+    private ScriptableObject HatCollection;
+    private ScriptableObject WeaponCollection;
+
     [MenuItem("Window/Character Creator")]
     public static void ShowWindow()
     {
         GetWindow<CharacterCreatorWindow>("Character Creator");
     }
 
-    private void CreateGUI()
+    private void OnEnable()
     {
-//        throw new NotImplementedException();
+        // Load the asset collections when the window is enabled
+        EyeCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(eyeCollectionPath);
+        FurCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(furCollectionPath);
+        HatCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(hatCollectionPath);
+        WeaponCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(weaponCollectionPath);
     }
 
-    // void OnGUI()
-    // {
-    //     characterCreator = FindObjectOfType<CharacterCreator>();
-    //
-    //     if (characterCreator == null)
-    //     {
-    //         EditorGUILayout.LabelField("Please add CharacterCreator script to a GameObject in the scene.");
-    //         return;
-    //     }
-    //
-    //     GUILayout.Label("Select Fur:");
-    //     characterCreator.selectedFur = (Fur)EditorGUILayout.ObjectField(characterCreator.selectedFur, typeof(Fur), false);
-    //
-    //     GUILayout.Label("Select Eyes:");
-    //     characterCreator.selectedEyes = (Eyes)EditorGUILayout.ObjectField(characterCreator.selectedEyes, typeof(Eyes), false);
-    //
-    //     GUILayout.Label("Select Hat:");
-    //     characterCreator.selectedHat = (Hat)EditorGUILayout.ObjectField(characterCreator.selectedHat, typeof(Hat), false);
-    //
-    //     GUILayout.Label("Select Weapon:");
-    //     characterCreator.selectedWeapon = (Weapon)EditorGUILayout.ObjectField(characterCreator.selectedWeapon, typeof(Weapon), false);
-    //
-    //     if (GUILayout.Button("Apply Changes"))
-    //     {
-    //         characterCreator.UpdateCharacter();
-    //     }
-    //
-    //     if (GUILayout.Button("Reset"))
-    //     {
-    //         ResetCharacter();
-    //     }
-    // }
-
-    private void ResetCharacter()
+    private void OnGUI()
     {
-        // Reset all selected assets to null
-        characterCreator.selectedFur = null;
-        characterCreator.selectedEyes = null;
-        characterCreator.selectedHat = null;
-        characterCreator.selectedWeapon = null;
-        characterCreator.UpdateCharacter();
+        GUILayout.Label("Character Creator", EditorStyles.boldLabel);
+
+        if (GUILayout.Button("Reload Collections"))
+        {
+            OnEnable(); // Reload collections
+        }
+
+        if (EyeCollection == null || FurCollection == null || HatCollection == null || WeaponCollection == null)
+        {
+            EditorGUILayout.HelpBox("One or more collections could not be loaded. Please check the paths.", MessageType.Error);
+            return;
+        }
+
+        // Manually draw inspector-like controls
+        DrawCollectionInspector("Eye Collection", ref EyeCollection);
+        DrawCollectionInspector("Fur Collection", ref FurCollection);
+        DrawCollectionInspector("Hat Collection", ref HatCollection);
+        DrawCollectionInspector("Weapon Collection", ref WeaponCollection);
+
+        GUILayout.Space(10);
+        if (GUILayout.Button("Create/Update Character"))
+        {
+            // Here you would invoke your character creator logic
+            if (characterCreator != null)
+            {
+                characterCreator.UpdateCharacter(EyeCollection, FurCollection, HatCollection, WeaponCollection);
+            }
+        }
+    }
+
+    // A method to mimic OnInspectorGUI drawing for a collection
+    void DrawCollectionInspector(string label, ref ScriptableObject collection)
+    {
+        GUILayout.Label(label + ":", EditorStyles.boldLabel);
+        EditorGUILayout.ObjectField(collection, typeof(ScriptableObject), false);
     }
 }
+
