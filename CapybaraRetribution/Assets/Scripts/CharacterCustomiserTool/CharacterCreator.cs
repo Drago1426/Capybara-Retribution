@@ -11,10 +11,10 @@ public class CharacterCreator : MonoBehaviour
     public SpriteRenderer weaponRenderer;
 
     //  Options
-    public Fur[] furOptions;
-    public Eyes[] eyesOptions;
-    public Hat[] hatOptions;
-    public Weapon[] weaponOptions;
+    public FurCollection furOptions;
+    public EyeCollection eyesOptions;
+    public HatCollection hatOptions;
+    public WeaponCollection weaponOptions;
     
     // Text 
     public TextMeshProUGUI furNameText;
@@ -111,11 +111,12 @@ public class CharacterCreator : MonoBehaviour
 
     internal void UpdateCharacter()
     {
+        
         // Currently Selected Option
-        selectedFur = furOptions[furIndex];
-        selectedEyes = eyesOptions[eyesIndex];
-        selectedHat = hatOptions[hatIndex];
-        selectedWeapon = weaponOptions[weaponIndex];
+        selectedFur = furOptions.items[furIndex];
+        selectedEyes = eyesOptions.items[eyesIndex];
+        selectedHat = hatOptions.items[hatIndex];
+        selectedWeapon = weaponOptions.items[weaponIndex];
 
         // Currently Selected Asset
         furRenderer.sprite = selectedFur.furSprite;

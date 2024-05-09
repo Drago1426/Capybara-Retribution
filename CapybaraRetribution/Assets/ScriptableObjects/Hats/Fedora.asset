@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Fedora
   m_EditorClassIdentifier: 
   hatName: Fedora
-  hatSprite: {fileID: 0}
+  hatSprite: {fileID: 837769651, guid: 1d1e675eda84e8141aed347193bb043e, type: 3}

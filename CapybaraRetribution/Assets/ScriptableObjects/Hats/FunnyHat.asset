@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: FunnyHat
   m_EditorClassIdentifier: 
   hatName: Funny Hat
-  hatSprite: {fileID: 0}
+  hatSprite: {fileID: -920121697, guid: 1d1e675eda84e8141aed347193bb043e, type: 3}

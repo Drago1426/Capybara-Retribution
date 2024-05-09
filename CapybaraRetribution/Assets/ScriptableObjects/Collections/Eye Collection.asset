@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 046ed03828c54f2a8cc2d4ecd30a5d26, type: 3}
+  m_Name: Eye Collection
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 11400000, guid: 8c2824d11d0de7f46a0c29b45fb25e8a, type: 2}
+  - {fileID: 11400000, guid: 0bc91d42f2b024d4da66000b142a9270, type: 2}
+  - {fileID: 11400000, guid: 0724ebb34bbe94245984ab8f0c029f00, type: 2}
+  - {fileID: 11400000, guid: 3f336620136637341bc391a0db713dc1, type: 2}
+  - {fileID: 11400000, guid: 20e3533aa330e974eace8e89c88d041f, type: 2}
+  - {fileID: 11400000, guid: ab4f1c2395f619542b3e932c882b2828, type: 2}
+  - {fileID: 11400000, guid: 26040a207fd0df74ba4ca30af90eedc9, type: 2}
+  - {fileID: 11400000, guid: 47ac17d805ee32947adef6cb3c915fa0, type: 2}

@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b51b1436bc1f4db596114e2d04970446, type: 3}
+  m_Name: Fur Collection
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 11400000, guid: 73ed8e8110215be44aeb94ffc80ffc05, type: 2}
+  - {fileID: 11400000, guid: 3380fc08d66a30c4a8f3fd8ad84cc685, type: 2}
+  - {fileID: 11400000, guid: 8cc1a22ee83576045876c7c4ae654dc7, type: 2}
+  - {fileID: 11400000, guid: c8c6c57109192e049bc49f02fc18a254, type: 2}
+  - {fileID: 11400000, guid: c5e081e0f5284a448ac0c13bb8c436d7, type: 2}
+  - {fileID: 11400000, guid: a1509a710214a304f8a0d1da3226ee03, type: 2}
+  - {fileID: 11400000, guid: 87a03d43a6fbc0043ac8945e8dd549cd, type: 2}
+  - {fileID: 11400000, guid: 248872a0e80b3b84f951633564595eda, type: 2}

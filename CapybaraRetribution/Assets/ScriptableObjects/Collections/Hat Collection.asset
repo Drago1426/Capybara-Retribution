@@ -1,0 +1,19 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e621b6b80e824e51bf7a36017170d602, type: 3}
+  m_Name: Hat Collection
+  m_EditorClassIdentifier: 
+  items:
+  - {fileID: 11400000, guid: b1cbcf53ee5346c4682730d66c68d913, type: 2}
+  - {fileID: 11400000, guid: 4b189f3d8bcee2749bbdb46d8139a755, type: 2}
+  - {fileID: 11400000, guid: 111d540ccb128894fbf6b6cb1e27f06d, type: 2}
+  - {fileID: 11400000, guid: 76c5683253378ba4e88d8660ff874576, type: 2}

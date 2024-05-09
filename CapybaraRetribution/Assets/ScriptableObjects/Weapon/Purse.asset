@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: Purse
   m_EditorClassIdentifier: 
   weaponName: Birkin Purse
-  weaponSprite: {fileID: 0}
+  weaponSprite: {fileID: -1449350928, guid: 6a3faae17ce565e47b10fdf4223201cf, type: 3}
   damage: 0

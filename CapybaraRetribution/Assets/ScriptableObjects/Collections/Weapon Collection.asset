@@ -9,9 +9,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9bc6443a7b10425d98d3fcb383245bcc, type: 3}
-  m_Name: Gun
+  m_Script: {fileID: 11500000, guid: 6788189ea5de4ee7a1e845182f779361, type: 3}
+  m_Name: Weapon Collection
   m_EditorClassIdentifier: 
-  weaponName: Glock
-  weaponSprite: {fileID: 2048356056, guid: 6a3faae17ce565e47b10fdf4223201cf, type: 3}
-  damage: 0
+  items:
+  - {fileID: 11400000, guid: aa316e4cbc7df6a4c9458206b219e0d8, type: 2}
+  - {fileID: 11400000, guid: 3f03a07e8667cb44a9be5356cec41765, type: 2}

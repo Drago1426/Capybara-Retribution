@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Beret
   m_EditorClassIdentifier: 
   hatName: Beret
-  hatSprite: {fileID: 0}
+  hatSprite: {fileID: 1659546565, guid: 1d1e675eda84e8141aed347193bb043e, type: 3}

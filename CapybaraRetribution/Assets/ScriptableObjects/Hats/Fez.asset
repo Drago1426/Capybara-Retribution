@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Fez
   m_EditorClassIdentifier: 
   hatName: Fez
-  hatSprite: {fileID: 0}
+  hatSprite: {fileID: -460562228, guid: 1d1e675eda84e8141aed347193bb043e, type: 3}
