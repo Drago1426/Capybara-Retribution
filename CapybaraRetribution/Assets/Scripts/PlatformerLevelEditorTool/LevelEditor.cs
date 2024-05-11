@@ -52,7 +52,7 @@ namespace PlatformerLevelEditorTool
             GetWindow<LevelEditor>("Platformer Level Editor Tool");
         }
 
-        private string[] items = new string[] { "Trap", "Enemy", "Tile" };
+        private string[] items = new string[] { "Trap", "Enemy", "Tile", "Player"};
         private int selectedItemIndex = 0;
         private Sprite selectedSprite;
         private Tilemap tilemap;
@@ -101,6 +101,14 @@ namespace PlatformerLevelEditorTool
                 if (GUILayout.Button("Activate Draw Tool"))
                 {
                     ToolManager.SetActiveTool<TilemapDrawTool>();
+                }
+            }
+            else if (selectedItemIndex == 3) // Player
+            {
+                selectedSprite = EditorGUILayout.ObjectField("Select Player Sprite", selectedSprite, typeof(Sprite), false) as Sprite;
+                if (GUILayout.Button("Place Player"))
+                {
+                    PlacePlayer();
                 }
             }
             else
@@ -175,6 +183,36 @@ namespace PlatformerLevelEditorTool
             rb.constraints = RigidbodyConstraints2D.FreezeRotation; // Commonly enemies shouldn't rotate in 2D platformers
             enemy.AddComponent<Animator>(); // Assuming there is an Animator component needed
             enemy.AddComponent<EnemyController>(); // Your custom enemy controller script
+        }
+        
+        void PlacePlayer()
+        {
+            // Check if there is already a player in the scene
+            if (GameObject.FindGameObjectWithTag("Player") != null)
+            {
+                EditorUtility.DisplayDialog("Player Exists", "There is already a player in the game.", "OK");
+                return;
+            }
+
+            if (selectedSprite == null)
+            {
+                EditorUtility.DisplayDialog("No Sprite Selected", "Please select a sprite for the player.", "OK");
+                return;
+            }
+
+            GameObject playerObject = new GameObject("Player");
+            playerObject.tag = "Player";
+
+            SpriteRenderer renderer = playerObject.AddComponent<SpriteRenderer>();
+            renderer.sprite = selectedSprite;
+
+            playerObject.AddComponent<BoxCollider2D>();
+            Rigidbody2D rb = playerObject.AddComponent<Rigidbody2D>();
+            rb.constraints = RigidbodyConstraints2D.FreezeRotation;
+
+            playerObject.AddComponent<PlayerController>(); // Attach the PlayerController script
+
+            Debug.Log("Player placed in the game.");
         }
     }
 }
