@@ -9,6 +9,7 @@ namespace DialogueSystemTool.Editor
     public class DialogueEditorWindow : EditorWindow
     {
         private List<BaseNode> nodes;
+        private List<NodeConnection> connections;
         private GUIStyle nodeStyle;
         private GUIStyle selectedNodeStyle;
         private BaseNode selectedNode;
@@ -32,54 +33,36 @@ namespace DialogueSystemTool.Editor
             selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
             nodes = new List<BaseNode>();
-        }
-
-        private void SaveDialogueTree()
-        {
-            if (dialogueTree != null)
-            {
-                EditorUtility.SetDirty(dialogueTree);
-                AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
-            }
-        }
-
-        private void LoadDialogueTree()
-        {
-            string path = EditorUtility.OpenFilePanel("Load Dialogue Tree", "Assets", "asset");
-            if (!string.IsNullOrEmpty(path))
-            {
-                path = "Assets" + path.Substring(Application.dataPath.Length);
-                dialogueTree = AssetDatabase.LoadAssetAtPath<DialogueTree>(path);
-                if (dialogueTree != null)
-                {
-                    nodes.Clear();
-                    foreach (var dataNode in dialogueTree.nodes)
-                    {
-                        nodes.Add(
-                            new DialogueNodeEditor(Vector2.zero, 200, 100, nodeStyle, selectedNodeStyle, dataNode));
-                    }
-                }
-            }
+            connections = new List<NodeConnection>();
         }
 
         private void OnGUI()
         {
-            if (GUILayout.Button("Save Dialogue Tree"))
-            {
-                SaveDialogueTree();
-            }
-
-            if (GUILayout.Button("Load Dialogue Tree"))
-            {
-                LoadDialogueTree();
-            }
+            DrawToolbar();
 
             DrawNodes();
+            DrawConnections();
             ProcessNodeEvents(Event.current);
             ProcessEvents(Event.current);
 
             if (GUI.changed) Repaint();
+        }
+
+        private void DrawToolbar()
+        {
+            GUILayout.BeginHorizontal(EditorStyles.toolbar);
+
+            if (GUILayout.Button("Save Dialogue Tree", EditorStyles.toolbarButton))
+            {
+                SaveDialogueTree();
+            }
+
+            if (GUILayout.Button("Load Dialogue Tree", EditorStyles.toolbarButton))
+            {
+                LoadDialogueTree();
+            }
+
+            GUILayout.EndHorizontal();
         }
 
         private void DrawNodes()
@@ -89,6 +72,17 @@ namespace DialogueSystemTool.Editor
                 foreach (var node in nodes)
                 {
                     node.Draw();
+                }
+            }
+        }
+
+        private void DrawConnections()
+        {
+            if (connections != null)
+            {
+                foreach (var connection in connections)
+                {
+                    connection.Draw();
                 }
             }
         }
@@ -116,8 +110,14 @@ namespace DialogueSystemTool.Editor
 
         private void OnClickAddNode(Vector2 mousePosition)
         {
-            DialogueNode dataNode = new DialogueNode(); // Creates new data node
-            nodes.Add(new DialogueNodeEditor(mousePosition, 200, 100, nodeStyle, selectedNodeStyle, dataNode));
+            DialogueNode dataNode = new DialogueNode(); // Create a new data node
+            var dialogueNodeEditor =
+                new DialogueNodeEditor(mousePosition, 200, 100, nodeStyle, selectedNodeStyle, dataNode);
+            nodes.Add(dialogueNodeEditor);
+            if (dialogueTree != null)
+            {
+                dialogueTree.nodes.Add(dataNode);
+            }
         }
 
         private void ProcessNodeEvents(Event e)
@@ -130,6 +130,36 @@ namespace DialogueSystemTool.Editor
                     if (guiChanged)
                     {
                         GUI.changed = true;
+                    }
+                }
+            }
+        }
+
+        private void SaveDialogueTree()
+        {
+            if (dialogueTree != null)
+            {
+                EditorUtility.SetDirty(dialogueTree);
+                AssetDatabase.SaveAssets();
+                AssetDatabase.Refresh();
+            }
+        }
+
+        private void LoadDialogueTree()
+        {
+            string path = EditorUtility.OpenFilePanel("Load Dialogue Tree", "Assets", "asset");
+            if (!string.IsNullOrEmpty(path))
+            {
+                path = "Assets" + path.Substring(Application.dataPath.Length);
+                dialogueTree = AssetDatabase.LoadAssetAtPath<DialogueTree>(path);
+                if (dialogueTree != null)
+                {
+                    nodes.Clear();
+                    connections.Clear();
+                    foreach (var dataNode in dialogueTree.nodes)
+                    {
+                        nodes.Add(
+                            new DialogueNodeEditor(Vector2.zero, 200, 100, nodeStyle, selectedNodeStyle, dataNode));
                     }
                 }
             }

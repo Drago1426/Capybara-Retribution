@@ -1,13 +1,13 @@
 ﻿using DialogueSystemTool.Data;
+using System.Collections.Generic;
+using UnityEngine;
 
 namespace DialogueSystemTool.ScriptableObjects
 {
-    using System.Collections.Generic;
-    using UnityEngine;
 
     [CreateAssetMenu(fileName = "DialogueTree", menuName = "Dialogue/DialogueTree")]
     public class DialogueTree : ScriptableObject
     {
-        public List<DialogueNode> nodes; // List of all nodes in the dialogue tree
+        public List<DialogueNode> nodes = new List<DialogueNode>(); // List of all nodes in the dialogue tree
     }
 }
