@@ -13,28 +13,48 @@ namespace DialogueSystemTool.Editor
         {
             this.dataNode = dataNode;
             title = "Dialogue Node";
+            UpdateHeight();
         }
 
         public override void Draw()
         {
             base.Draw();
 
-            Rect textRect = new Rect(rect.x + 10, rect.y + 30, rect.width - 20, rect.height - 40);
-            dataNode.dialogueText = EditorGUI.TextField(textRect, dataNode.dialogueText);
+            GUILayout.BeginArea(new Rect(rect.x + 10, rect.y + 25, rect.width - 20, rect.height - 25));
 
-            // Draw dialogue options
+            GUILayout.Label("Dialogue Text:", EditorStyles.label);
+            dataNode.dialogueText = EditorGUILayout.TextArea(dataNode.dialogueText, GUILayout.Height(60));
+
+            GUILayout.Space(10);
+
+            GUILayout.Label("Options:", EditorStyles.label);
             for (int i = 0; i < dataNode.options.Count; i++)
             {
-                DialogueOption option = dataNode.options[i];
-                Rect optionRect = new Rect(rect.x + 10, rect.y + 60 + (i * 25), rect.width - 20, 20);
-                option.optionText = EditorGUI.TextField(optionRect, option.optionText);
+                EditorGUILayout.BeginHorizontal();
+                dataNode.options[i].optionText = EditorGUILayout.TextField(dataNode.options[i].optionText, GUILayout.ExpandWidth(true));
+                if (GUILayout.Button("X", GUILayout.Width(20)))
+                {
+                    dataNode.options.RemoveAt(i);
+                    UpdateHeight();
+                    break; // Exit the loop after modification to avoid layout issues
+                }
+                EditorGUILayout.EndHorizontal();
             }
 
-            // Add button to add new option
-            if (GUI.Button(new Rect(rect.x + 10, rect.y + rect.height - 30, rect.width - 20, 20), "Add Option"))
+            GUILayout.Space(10);
+
+            if (GUILayout.Button("Add Option"))
             {
                 dataNode.options.Add(new DialogueOption());
+                UpdateHeight();
             }
+
+            GUILayout.EndArea();
+        }
+
+        private void UpdateHeight()
+        {
+            rect.height = 140 + (dataNode.options.Count * 25); // Adjust height based on options
         }
     }
 }

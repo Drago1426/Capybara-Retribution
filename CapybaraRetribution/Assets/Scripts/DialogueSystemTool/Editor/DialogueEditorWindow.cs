@@ -28,8 +28,7 @@ namespace DialogueSystemTool.Editor
             nodeStyle.border = new RectOffset(12, 12, 12, 12);
 
             selectedNodeStyle = new GUIStyle();
-            selectedNodeStyle.normal.background =
-                EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
+            selectedNodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1 on.png") as Texture2D;
             selectedNodeStyle.border = new RectOffset(12, 12, 12, 12);
 
             nodes = new List<BaseNode>();
@@ -96,7 +95,6 @@ namespace DialogueSystemTool.Editor
                     {
                         ShowContextMenu(e.mousePosition);
                     }
-
                     break;
             }
         }
@@ -111,12 +109,22 @@ namespace DialogueSystemTool.Editor
         private void OnClickAddNode(Vector2 mousePosition)
         {
             DialogueNode dataNode = new DialogueNode(); // Create a new data node
-            var dialogueNodeEditor =
-                new DialogueNodeEditor(mousePosition, 200, 100, nodeStyle, selectedNodeStyle, dataNode);
+            var dialogueNodeEditor = new DialogueNodeEditor(mousePosition, 200, 100, nodeStyle, selectedNodeStyle, dataNode);
+            dialogueNodeEditor.OnRemoveNode += OnRemoveNode; // Subscribe to the remove event
             nodes.Add(dialogueNodeEditor);
             if (dialogueTree != null)
             {
                 dialogueTree.nodes.Add(dataNode);
+            }
+        }
+
+        private void OnRemoveNode(BaseNode node)
+        {
+            nodes.Remove(node);
+            var dialogueNodeEditor = node as DialogueNodeEditor;
+            if (dialogueNodeEditor != null && dialogueTree != null)
+            {
+                dialogueTree.nodes.Remove(dialogueNodeEditor.dataNode);
             }
         }
 
@@ -158,8 +166,9 @@ namespace DialogueSystemTool.Editor
                     connections.Clear();
                     foreach (var dataNode in dialogueTree.nodes)
                     {
-                        nodes.Add(
-                            new DialogueNodeEditor(Vector2.zero, 200, 100, nodeStyle, selectedNodeStyle, dataNode));
+                        var dialogueNodeEditor = new DialogueNodeEditor(Vector2.zero, 200, 100, nodeStyle, selectedNodeStyle, dataNode);
+                        dialogueNodeEditor.OnRemoveNode += OnRemoveNode; // Subscribe to the remove event
+                        nodes.Add(dialogueNodeEditor);
                     }
                 }
             }
