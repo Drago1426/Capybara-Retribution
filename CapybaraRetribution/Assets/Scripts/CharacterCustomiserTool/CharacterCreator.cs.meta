@@ -8,8 +8,16 @@ MonoImporter:
   - eyesRenderer: {instanceID: 0}
   - hatRenderer: {instanceID: 0}
   - weaponRenderer: {instanceID: 0}
+  - furOptions: {fileID: 11400000, guid: e15a3a7dd8ba9ca4caeede673afedcb6, type: 2}
+  - eyesOptions: {fileID: 11400000, guid: 3a0aa51cddd37a3429b45da78b95a017, type: 2}
+  - hatOptions: {fileID: 11400000, guid: 70119bf0248a1524493a2f5b0962a7b4, type: 2}
+  - weaponOptions: {fileID: 11400000, guid: 3d01b4f59ae3b2742bd2ac84723fc62a, type: 2}
+  - furNameText: {instanceID: 0}
+  - eyesNameText: {instanceID: 0}
+  - hatNameText: {instanceID: 0}
+  - weaponNameText: {instanceID: 0}
   - selectedFur: {fileID: 11400000, guid: c8c6c57109192e049bc49f02fc18a254, type: 2}
-  - selectedEyes: {fileID: 11400000, guid: d4c054294c4ae5c48b5b154b1b4c2026, type: 2}
+  - selectedEyes: {fileID: 11400000, guid: 8c2824d11d0de7f46a0c29b45fb25e8a, type: 2}
   - selectedHat: {fileID: 11400000, guid: b1cbcf53ee5346c4682730d66c68d913, type: 2}
   - selectedWeapon: {fileID: 11400000, guid: aa316e4cbc7df6a4c9458206b219e0d8, type: 2}
   executionOrder: 0

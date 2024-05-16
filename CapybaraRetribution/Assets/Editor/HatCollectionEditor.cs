@@ -9,6 +9,9 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(HatCollection))]
 public class HatCollectionEditor : Editor
 {
+    // List to keep track of selected items
+    List<Hat> selectedItems = new List<Hat>();
+
     public override VisualElement CreateInspectorGUI()
     {
         // Create the root visual element
@@ -76,7 +79,6 @@ public class HatCollectionEditor : Editor
 
                 // Refresh the ListView
                 listViewContainer.Clear();
-                PopulateListView(listViewContainer, hatCollection.bodyParts);
                 EditorUtility.SetDirty(target); // Mark the asset as modified
             }
         })
@@ -88,26 +90,28 @@ public class HatCollectionEditor : Editor
         // List to keep track of selected items
         List<Hat> selectedItems = new List<Hat>();
 
-        // ListView setup for Hat items
-        ListView listView = new ListView(hatCollection.bodyParts, 20, () => new Label(), (element, index) =>
-        {
-            (element as Label).text = hatCollection.bodyParts[index].hatName;
-            // Make the label clickable and navigate to the ScriptableObject when clicked
-            element.RegisterCallback<ClickEvent>(evt =>
-            {
-                Selection.activeObject = hatCollection.bodyParts[index];
-                EditorGUIUtility.PingObject(hatCollection.bodyParts[index]);
-            });
-        });
-        listView.selectionType = SelectionType.Multiple;
-        listView.onSelectionChange += selected =>
-        {
-            selectedItems.Clear();
-            foreach (var item in selected)
-                selectedItems.Add((Hat)item);
-        };
-        listView.style.flexGrow = 1.0f;
-        listViewContainer.Add(listView);
+        // // ListView setup for Hat items
+        // ListView listView = new ListView(hatCollection.bodyParts, 20, () => new Label(), (element, index) =>
+        // {
+        //     (element as Label).text = hatCollection.bodyParts[index].hatName;
+        //     // Make the label clickable and navigate to the ScriptableObject when clicked
+        //     element.RegisterCallback<ClickEvent>(evt =>
+        //     {
+        //         Selection.activeObject = hatCollection.bodyParts[index];
+        //         EditorGUIUtility.PingObject(hatCollection.bodyParts[index]);
+        //     });
+        // });
+        // listView.selectionType = SelectionType.Multiple;
+        // listView.selectionChanged += selected =>
+        // {
+        //     selectedItems.Clear();
+        //     foreach (var item in selected)
+        //         selectedItems.Add((Hat)item);
+        // };
+        // listView.style.flexGrow = 1.0f;
+        // listViewContainer.Add(listView);
+
+        PopulateListView(listViewContainer, hatCollection.bodyParts);
 
         // Delete button to remove selected Hat items
         var deleteButton = new Button(() =>
@@ -154,6 +158,12 @@ public class HatCollectionEditor : Editor
             };
 
             var listView = new ListView(items, itemHeight, makeItem, bindItem);
+            listView.selectionChanged += selected =>
+            {
+                selectedItems.Clear();
+                foreach (var item in selected)
+                    selectedItems.Add((Hat)item);
+            };
             listView.style.flexGrow = 1.0f;
             container.Add(listView);
         }

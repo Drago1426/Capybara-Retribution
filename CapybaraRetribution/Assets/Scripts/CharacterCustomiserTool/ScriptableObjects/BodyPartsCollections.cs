@@ -1,16 +1,15 @@
 ﻿using System.Collections.Generic;
 using UnityEngine;
 
-    public abstract class BodyPartsCollections<T> : ScriptableObject
-        where T : ScriptableObject
+public abstract class BodyPartsCollections<T> : ScriptableObject where T : ScriptableObject
+{
+    public int Length
     {
-        public int Length
+        get
         {
-            get
-            {
-                return items.Count;
-            }
+            return items.Count;
         }
-        
-        public List<T> items = new List<T>();
     }
+
+    public List<T> items = new List<T>();
+}

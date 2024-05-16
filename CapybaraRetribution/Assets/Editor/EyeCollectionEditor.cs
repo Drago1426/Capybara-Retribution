@@ -9,6 +9,9 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(EyeCollection))]
 public class EyeCollectionEditor : Editor
 {
+    // List to keep track of selected items
+    List<Eyes> selectedItems = new List<Eyes>();
+    
     public override VisualElement CreateInspectorGUI()
     {
         // Create the root visual element
@@ -85,29 +88,22 @@ public class EyeCollectionEditor : Editor
         };
         root.Add(addButton);
 
-        // List to keep track of selected items
-        List<Eyes> selectedItems = new List<Eyes>();
 
         // ListView setup for Eye items
-        ListView listView = new ListView(eyeCollection.bodyParts, 20, () => new Label(), (element, index) =>
-        {
-            (element as Label).text = eyeCollection.bodyParts[index].eyesName;
-            // Make the label clickable and navigate to the ScriptableObject when clicked
-            element.RegisterCallback<ClickEvent>(evt =>
-            {
-                Selection.activeObject = eyeCollection.bodyParts[index];
-                EditorGUIUtility.PingObject(eyeCollection.bodyParts[index]);
-            });
-        });
-        listView.selectionType = SelectionType.Multiple;
-        listView.onSelectionChange += selected =>
-        {
-            selectedItems.Clear();
-            foreach (var item in selected)
-                selectedItems.Add((Eyes)item);
-        };
-        listView.style.flexGrow = 1.0f;
-        listViewContainer.Add(listView);
+        // ListView listView = new ListView(eyeCollection.bodyParts, 20, () => new Label(), (element, index) =>
+        // {
+        //     (element as Label).text = eyeCollection.bodyParts[index].eyesName;
+        //     // Make the label clickable and navigate to the ScriptableObject when clicked
+        //     element.RegisterCallback<ClickEvent>(evt =>
+        //     {
+        //         Selection.activeObject = eyeCollection.bodyParts[index];
+        //         EditorGUIUtility.PingObject(eyeCollection.bodyParts[index]);
+        //     });
+        // });
+        // listView.selectionType = SelectionType.Multiple;
+        
+        
+        PopulateListView(listViewContainer, eyeCollection.bodyParts);
 
         // Delete button to remove selected Eye items
         var deleteButton = new Button(() =>
@@ -154,6 +150,12 @@ public class EyeCollectionEditor : Editor
             };
 
             var listView = new ListView(items, itemHeight, makeItem, bindItem);
+            listView.selectionChanged += selected =>
+            {
+                selectedItems.Clear();
+                foreach (var item in selected)
+                    selectedItems.Add((Eyes)item);
+            };
             listView.style.flexGrow = 1.0f;
             container.Add(listView);
         }

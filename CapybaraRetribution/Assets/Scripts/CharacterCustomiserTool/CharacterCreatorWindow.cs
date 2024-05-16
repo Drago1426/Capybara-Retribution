@@ -55,6 +55,7 @@ public class CharacterCreatorWindow : EditorWindow
         DrawCollectionInspector("Weapon Collection", ref WeaponCollection);
 
         GUILayout.Space(10);
+
         if (GUILayout.Button("Create/Update Character"))
         {
             // Here you would invoke your character creator logic
@@ -72,4 +73,3 @@ public class CharacterCreatorWindow : EditorWindow
         EditorGUILayout.ObjectField(collection, typeof(ScriptableObject), false);
     }
 }
-

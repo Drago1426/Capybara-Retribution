@@ -9,6 +9,9 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(WeaponCollection))]
 public class WeaponCollectionEditor : Editor
 {
+    // List to keep track of selected items
+    List<Weapon> selectedItems = new List<Weapon>();
+
     public override VisualElement CreateInspectorGUI()
     {
         // Create the root visual element
@@ -85,29 +88,32 @@ public class WeaponCollectionEditor : Editor
         };
         root.Add(addButton);
 
-        // List to keep track of selected items
-        List<Weapon> selectedItems = new List<Weapon>();
+        // // List to keep track of selected items
+        // List<Weapon> selectedItems = new List<Weapon>();
+        //
+        // // ListView setup for Weapon items
+        // ListView listView = new ListView(weaponCollection.bodyParts, 20, () => new Label(), (element, index) =>
+        // {
+        //     (element as Label).text = weaponCollection.bodyParts[index].weaponName;
+        //     // Make the label clickable and navigate to the ScriptableObject when clicked
+        //     element.RegisterCallback<ClickEvent>(evt =>
+        //     {
+        //         Selection.activeObject = weaponCollection.bodyParts[index];
+        //         EditorGUIUtility.PingObject(weaponCollection.bodyParts[index]);
+        //     });
+        // });
+        // listView.selectionType = SelectionType.Multiple;
+        // listView.selectionChanged += selected =>
+        // {
+        //     selectedItems.Clear();
+        //     foreach (var item in selected)
+        //         selectedItems.Add((Weapon)item);
+        // };
+        // listView.style.flexGrow = 1.0f;
+        // listViewContainer.Add(listView);
+        
+        PopulateListView(listViewContainer, weaponCollection.bodyParts);
 
-        // ListView setup for Weapon items
-        ListView listView = new ListView(weaponCollection.bodyParts, 20, () => new Label(), (element, index) =>
-        {
-            (element as Label).text = weaponCollection.bodyParts[index].weaponName;
-            // Make the label clickable and navigate to the ScriptableObject when clicked
-            element.RegisterCallback<ClickEvent>(evt =>
-            {
-                Selection.activeObject = weaponCollection.bodyParts[index];
-                EditorGUIUtility.PingObject(weaponCollection.bodyParts[index]);
-            });
-        });
-        listView.selectionType = SelectionType.Multiple;
-        listView.onSelectionChange += selected =>
-        {
-            selectedItems.Clear();
-            foreach (var item in selected)
-                selectedItems.Add((Weapon)item);
-        };
-        listView.style.flexGrow = 1.0f;
-        listViewContainer.Add(listView);
 
         // Delete button to remove selected Weapon items
         var deleteButton = new Button(() =>
@@ -154,6 +160,12 @@ public class WeaponCollectionEditor : Editor
             };
 
             var listView = new ListView(items, itemHeight, makeItem, bindItem);
+            listView.selectionChanged += selected =>
+            {
+                selectedItems.Clear();
+                foreach (var item in selected)
+                    selectedItems.Add((Weapon)item);
+            };
             listView.style.flexGrow = 1.0f;
             container.Add(listView);
         }

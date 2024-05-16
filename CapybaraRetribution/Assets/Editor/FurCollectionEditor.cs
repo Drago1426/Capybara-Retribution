@@ -8,6 +8,8 @@ using UnityEngine.UIElements;
 [CustomEditor(typeof(FurCollection))]
 public class FurCollectionEditor : Editor
 {
+    // List to keep track of selected items
+    List<Fur> selectedItems = new List<Fur>();
     public override VisualElement CreateInspectorGUI()
     {
         // Create the root visual element
@@ -84,29 +86,31 @@ public class FurCollectionEditor : Editor
         };
         root.Add(addButton);
 
-        // List to keep track of selected items
-        List<Fur> selectedItems = new List<Fur>();
+        // // List to keep track of selected items
+        // List<Fur> selectedItems = new List<Fur>();
+        //
+        // // ListView setup for Fur items
+        // ListView listView = new ListView(furCollection.bodyParts, 20, () => new Label(), (element, index) =>
+        // {
+        //     (element as Label).text = furCollection.bodyParts[index].furName;
+        //     // Make the label clickable and navigate to the ScriptableObject when clicked
+        //     element.RegisterCallback<ClickEvent>(evt =>
+        //     {
+        //         Selection.activeObject = furCollection.bodyParts[index];
+        //         EditorGUIUtility.PingObject(furCollection.bodyParts[index]);
+        //     });
+        // });
+        // listView.selectionType = SelectionType.Multiple;
+        // listView.selectionChanged += selected =>
+        // {
+        //     selectedItems.Clear();
+        //     foreach (var item in selected)
+        //         selectedItems.Add((Fur)item);
+        // };
+        // listView.style.flexGrow = 1.0f;
+        // listViewContainer.Add(listView);
 
-        // ListView setup for Fur items
-        ListView listView = new ListView(furCollection.bodyParts, 20, () => new Label(), (element, index) =>
-        {
-            (element as Label).text = furCollection.bodyParts[index].furName;
-            // Make the label clickable and navigate to the ScriptableObject when clicked
-            element.RegisterCallback<ClickEvent>(evt =>
-            {
-                Selection.activeObject = furCollection.bodyParts[index];
-                EditorGUIUtility.PingObject(furCollection.bodyParts[index]);
-            });
-        });
-        listView.selectionType = SelectionType.Multiple;
-        listView.onSelectionChange += selected =>
-        {
-            selectedItems.Clear();
-            foreach (var item in selected)
-                selectedItems.Add((Fur)item);
-        };
-        listView.style.flexGrow = 1.0f;
-        listViewContainer.Add(listView);
+        PopulateListView(listViewContainer, furCollection.bodyParts);
 
         // Delete button to remove selected Fur items
         var deleteButton = new Button(() =>
@@ -153,6 +157,12 @@ public class FurCollectionEditor : Editor
             };
 
             var listView = new ListView(items, itemHeight, makeItem, bindItem);
+            listView.selectionChanged += selected =>
+            {
+                selectedItems.Clear();
+                foreach (var item in selected)
+                    selectedItems.Add((Fur)item);
+            };
             listView.style.flexGrow = 1.0f;
             container.Add(listView);
         }
