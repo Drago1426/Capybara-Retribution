@@ -15,6 +15,9 @@ namespace DialogueSystemTool.Editor
         private BaseNode selectedNode;
         private DialogueTree dialogueTree;
 
+        private DialogueNodeEditor selectedOutNodeEditor;
+        private int selectedOutOptionIndex;
+
         [MenuItem("Window/Dialogue Editor")]
         public static void ShowWindow()
         {
@@ -96,6 +99,19 @@ namespace DialogueSystemTool.Editor
                         ShowContextMenu(e.mousePosition);
                     }
                     break;
+                case EventType.MouseUp:
+                    if (selectedOutNodeEditor != null && selectedNode != null && selectedNode is DialogueNodeEditor)
+                    {
+                        CreateConnection(selectedOutNodeEditor, (DialogueNodeEditor)selectedNode, selectedOutOptionIndex);
+                    }
+                    ClearConnectionSelection();
+                    break;
+                case EventType.MouseDrag:
+                    if (selectedOutNodeEditor != null)
+                    {
+                        DragConnection(e.mousePosition);
+                    }
+                    break;
             }
         }
 
@@ -120,6 +136,24 @@ namespace DialogueSystemTool.Editor
 
         private void OnRemoveNode(BaseNode node)
         {
+            if (connections != null)
+            {
+                List<NodeConnection> connectionsToRemove = new List<NodeConnection>();
+
+                foreach (var connection in connections)
+                {
+                    if (connection.startNode == node || connection.endNode == node)
+                    {
+                        connectionsToRemove.Add(connection);
+                    }
+                }
+
+                foreach (var connection in connectionsToRemove)
+                {
+                    connections.Remove(connection);
+                }
+            }
+
             nodes.Remove(node);
             var dialogueNodeEditor = node as DialogueNodeEditor;
             if (dialogueNodeEditor != null && dialogueTree != null)
@@ -172,6 +206,41 @@ namespace DialogueSystemTool.Editor
                     }
                 }
             }
+        }
+
+        private void CreateConnection(DialogueNodeEditor outNode, DialogueNodeEditor inNode, int optionIndex)
+        {
+            var connection = new NodeConnection(outNode, inNode);
+            connections.Add(connection);
+
+            // Set the target node ID for the option
+            outNode.dataNode.options[optionIndex].nextNodeId = inNode.dataNode.id;
+        }
+
+        private void ClearConnectionSelection()
+        {
+            selectedOutNodeEditor = null;
+            selectedOutOptionIndex = -1;
+        }
+
+        private void DragConnection(Vector2 mousePosition)
+        {
+            Handles.DrawBezier(
+                selectedOutNodeEditor.rect.center,
+                mousePosition,
+                selectedOutNodeEditor.rect.center + Vector2.left * 50f,
+                mousePosition - Vector2.left * 50f,
+                Color.white,
+                null,
+                2f
+            );
+            GUI.changed = true;
+        }
+
+        public void SetOptionTargetNode(DialogueNodeEditor nodeEditor, int optionIndex)
+        {
+            selectedOutNodeEditor = nodeEditor;
+            selectedOutOptionIndex = optionIndex;
         }
     }
 }

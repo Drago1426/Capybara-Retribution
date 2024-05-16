@@ -93,5 +93,10 @@ namespace DialogueSystemTool.Data
         {
             OnRemoveNode?.Invoke(this);
         }
+
+        public Vector2 GetConnectionPoint()
+        {
+            return new Vector2(rect.xMax, rect.center.y);
+        }
     }
 }

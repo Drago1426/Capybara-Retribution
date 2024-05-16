@@ -31,7 +31,7 @@ namespace DialogueSystemTool.Editor
             for (int i = 0; i < dataNode.options.Count; i++)
             {
                 EditorGUILayout.BeginHorizontal();
-                dataNode.options[i].optionText = EditorGUILayout.TextField(dataNode.options[i].optionText, GUILayout.ExpandWidth(true));
+                dataNode.options[i].optionText = EditorGUILayout.TextField(dataNode.options[i].optionText);
                 if (GUILayout.Button("X", GUILayout.Width(20)))
                 {
                     dataNode.options.RemoveAt(i);
@@ -39,6 +39,13 @@ namespace DialogueSystemTool.Editor
                     break; // Exit the loop after modification to avoid layout issues
                 }
                 EditorGUILayout.EndHorizontal();
+                
+                // Display the button to set the target node for this option
+                if (GUILayout.Button("Set Target Node"))
+                {
+                    DialogueEditorWindow editorWindow = (DialogueEditorWindow)EditorWindow.GetWindow(typeof(DialogueEditorWindow));
+                    editorWindow.SetOptionTargetNode(this, i);
+                }
             }
 
             GUILayout.Space(10);
@@ -54,7 +61,7 @@ namespace DialogueSystemTool.Editor
 
         private void UpdateHeight()
         {
-            rect.height = 140 + (dataNode.options.Count * 25); // Adjust height based on options
+            rect.height = 190 + (dataNode.options.Count * 30); // Adjust height based on options
         }
     }
 }
