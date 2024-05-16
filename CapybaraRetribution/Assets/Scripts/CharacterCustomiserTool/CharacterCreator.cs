@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System.IO;
+using UnityEngine;
 using UnityEditor;
 using TMPro;
 
@@ -166,4 +167,36 @@ public class CharacterCreator : MonoBehaviour
     {
         throw new System.NotImplementedException();
     }
+
+    private const string saveFilePath = "characterData.json";
+
+    public void SaveCharacter()
+    {
+        CharacterData characterData = new CharacterData
+        {
+            furIndex = furIndex,
+            eyesIndex = eyesIndex,
+            hatIndex = hatIndex,
+            weaponIndex = weaponIndex
+        };
+        string json = JsonUtility.ToJson(characterData);
+        File.WriteAllText(Path.Combine(Application.persistentDataPath, saveFilePath), json);
+    }
+
+    public void LoadCharacter()
+    {
+        string fullPath = Path.Combine(Application.persistentDataPath, saveFilePath);
+        if (File.Exists(fullPath))
+        {
+            string json = File.ReadAllText(fullPath);
+            CharacterData characterData = JsonUtility.FromJson<CharacterData>(json);
+
+            furIndex = characterData.furIndex;
+            eyesIndex = characterData.eyesIndex;
+            hatIndex = characterData.hatIndex;
+            weaponIndex = characterData.weaponIndex;
+
+            UpdateCharacter();
+    } 
+    } 
 }

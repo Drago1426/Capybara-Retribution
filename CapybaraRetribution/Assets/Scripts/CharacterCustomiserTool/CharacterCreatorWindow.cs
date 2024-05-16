@@ -1,6 +1,6 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEditor;
+using UnityEditor.SceneManagement;
 
 public class CharacterCreatorWindow : EditorWindow
 {
@@ -31,6 +31,9 @@ public class CharacterCreatorWindow : EditorWindow
         FurCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(furCollectionPath);
         HatCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(hatCollectionPath);
         WeaponCollection = AssetDatabase.LoadAssetAtPath<ScriptableObject>(weaponCollectionPath);
+
+        // Find the CharacterCreator in the scene
+        characterCreator = FindObjectOfType<CharacterCreator>();
     }
 
     private void OnGUI()
@@ -58,10 +61,21 @@ public class CharacterCreatorWindow : EditorWindow
 
         if (GUILayout.Button("Create/Update Character"))
         {
-            // Here you would invoke your character creator logic
             if (characterCreator != null)
             {
                 characterCreator.UpdateCharacter(EyeCollection, FurCollection, HatCollection, WeaponCollection);
+            }
+        }
+
+        GUILayout.Space(10);
+
+        if (GUILayout.Button("Play"))
+        {
+            if (characterCreator != null)
+            {
+                characterCreator.SaveCharacter();
+                // Load the next scene
+                EditorSceneManager.OpenScene("Assets/Scenes/NextScene.unity");
             }
         }
     }
