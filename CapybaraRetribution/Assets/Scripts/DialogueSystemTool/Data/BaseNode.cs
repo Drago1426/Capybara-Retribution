@@ -1,41 +1,49 @@
-﻿using UnityEditor;
+﻿using System;
+using UnityEditor;
 using UnityEngine;
 
 namespace DialogueSystemTool.Data
 {
-    public class BaseNode
+    /// <summary>
+    /// Base class for a node in the dialogue system.
+    /// </summary>
+    public abstract class BaseNode
     {
-        public Rect rect;
-        public string title;
-        public bool isDragged;
-        public bool isSelected;
+        public Rect rect; // The rectangle defining the node's position and size
+        public string title; // The title of the node
+        private bool isSelected; // Whether the node is selected
+        private GUIStyle nodeStyle; // Style for the node
+        private GUIStyle selectedNodeStyle; // Style for the selected node
+        private Action<BaseNode> OnRemoveNode; // Callback for removing the node
 
-        public GUIStyle style;
-        public GUIStyle defaultNodeStyle;
-        public GUIStyle selectedNodeStyle;
-
-        public delegate void NodeEvent(BaseNode node);
-        public event NodeEvent OnRemoveNode;
-
-        public BaseNode(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedStyle)
+        /// <summary>
+        /// Constructor for the BaseNode class.
+        /// </summary>
+        /// <param name="position">Position of the node.</param>
+        /// <param name="width">Width of the node.</param>
+        /// <param name="height">Height of the node.</param>
+        /// <param name="nodeStyle">Style for the node.</param>
+        /// <param name="selectedNodeStyle">Style for the selected node.</param>
+        public BaseNode(Vector2 position, float width, float height, GUIStyle nodeStyle, GUIStyle selectedNodeStyle)
         {
             rect = new Rect(position.x, position.y, width, height);
-            style = nodeStyle;
-            defaultNodeStyle = nodeStyle;
-            selectedNodeStyle = selectedStyle;
+            this.nodeStyle = nodeStyle;
+            this.selectedNodeStyle = selectedNodeStyle;
         }
 
+        /// <summary>
+        /// Draws the node.
+        /// </summary>
         public virtual void Draw()
         {
-            GUI.Box(rect, "", style); // Draw an empty box to set the style
-            GUI.Label(new Rect(rect.x + 10, rect.y + 5, rect.width - 20, 20), title, EditorStyles.boldLabel); // Draw the title inside the box
+            GUI.Box(rect, title, isSelected ? selectedNodeStyle : nodeStyle);
         }
 
-        public virtual void Drag(Vector2 delta)
-        {
-            rect.position += delta;
-        }
-
+        /// <summary>
+        /// Processes events for the node.
+        /// </summary>
+        /// <param name="e">The event to process.</param>
+        /// <returns>True if the event was used, false otherwise.</returns>
         public bool ProcessEvents(Event e)
         {
             switch (e.type)
@@ -45,32 +53,19 @@ namespace DialogueSystemTool.Data
                     {
                         if (rect.Contains(e.mousePosition))
                         {
-                            isDragged = true;
-                            GUI.changed = true;
                             isSelected = true;
-                            style = selectedNodeStyle;
+                            GUI.changed = true;
                         }
                         else
                         {
-                            GUI.changed = true;
                             isSelected = false;
-                            style = defaultNodeStyle;
+                            GUI.changed = true;
                         }
                     }
-
-                    if (e.button == 1 && isSelected)
-                    {
-                        ProcessContextMenu();
-                        e.Use();
-                    }
-                    break;
-
-                case EventType.MouseUp:
-                    isDragged = false;
                     break;
 
                 case EventType.MouseDrag:
-                    if (e.button == 0 && isDragged)
+                    if (e.button == 0 && isSelected)
                     {
                         Drag(e.delta);
                         e.Use();
@@ -82,21 +77,30 @@ namespace DialogueSystemTool.Data
             return false;
         }
 
-        private void ProcessContextMenu()
+        /// <summary>
+        /// Drags the node by a given delta.
+        /// </summary>
+        /// <param name="delta">The amount to drag the node.</param>
+        public void Drag(Vector2 delta)
         {
-            GenericMenu genericMenu = new GenericMenu();
-            genericMenu.AddItem(new GUIContent("Remove node"), false, OnClickRemoveNode);
-            genericMenu.ShowAsContext();
+            rect.position += delta;
         }
 
-        private void OnClickRemoveNode()
+        /// <summary>
+        /// Sets the callback for removing the node.
+        /// </summary>
+        /// <param name="onRemoveNode">The callback to set.</param>
+        public void SetOnRemoveNode(Action<BaseNode> onRemoveNode)
+        {
+            OnRemoveNode = onRemoveNode;
+        }
+
+        /// <summary>
+        /// Invokes the remove node callback.
+        /// </summary>
+        public void RemoveNode()
         {
             OnRemoveNode?.Invoke(this);
-        }
-
-        public Vector2 GetConnectionPoint()
-        {
-            return new Vector2(rect.xMax, rect.center.y);
         }
     }
 }

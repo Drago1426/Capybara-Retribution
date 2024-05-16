@@ -16,8 +16,9 @@ namespace DialogueSystemTool.Editor
         private DialogueTree dialogueTree;
 
         private DialogueNodeEditor selectedOutNodeEditor;
-        private int selectedOutOptionIndex;
+        private int selectedOutOptionIndex = -1;
 
+        // Create menu item to show the dialogue editor window
         [MenuItem("Window/Dialogue Editor")]
         public static void ShowWindow()
         {
@@ -26,6 +27,7 @@ namespace DialogueSystemTool.Editor
 
         private void OnEnable()
         {
+            // Load styles for nodes
             nodeStyle = new GUIStyle();
             nodeStyle.normal.background = EditorGUIUtility.Load("builtin skins/darkskin/images/node1.png") as Texture2D;
             nodeStyle.border = new RectOffset(12, 12, 12, 12);
@@ -64,114 +66,74 @@ namespace DialogueSystemTool.Editor
                 LoadDialogueTree();
             }
 
+            if (GUILayout.Button("Add Node", EditorStyles.toolbarButton))
+            {
+                AddNode(new Vector2(10, 10)); // Default position for the new node
+            }
+
+            if (GUILayout.Button("Remove Selected Node", EditorStyles.toolbarButton))
+            {
+                RemoveSelectedNode();
+            }
+
             GUILayout.EndHorizontal();
         }
 
-        private void DrawNodes()
+        private void AddNode(Vector2 position)
         {
-            if (nodes != null)
-            {
-                foreach (var node in nodes)
-                {
-                    node.Draw();
-                }
-            }
-        }
+            var newNode = new DialogueNode();
+            newNode.id = System.Guid.NewGuid().ToString(); // Generate a unique ID for the new node
 
-        private void DrawConnections()
-        {
-            if (connections != null)
-            {
-                foreach (var connection in connections)
-                {
-                    connection.Draw();
-                }
-            }
-        }
-
-        private void ProcessEvents(Event e)
-        {
-            switch (e.type)
-            {
-                case EventType.MouseDown:
-                    if (e.button == 1)
-                    {
-                        ShowContextMenu(e.mousePosition);
-                    }
-                    break;
-                case EventType.MouseUp:
-                    if (selectedOutNodeEditor != null && selectedNode != null && selectedNode is DialogueNodeEditor)
-                    {
-                        CreateConnection(selectedOutNodeEditor, (DialogueNodeEditor)selectedNode, selectedOutOptionIndex);
-                    }
-                    ClearConnectionSelection();
-                    break;
-                case EventType.MouseDrag:
-                    if (selectedOutNodeEditor != null)
-                    {
-                        DragConnection(e.mousePosition);
-                    }
-                    break;
-            }
-        }
-
-        private void ShowContextMenu(Vector2 mousePosition)
-        {
-            GenericMenu genericMenu = new GenericMenu();
-            genericMenu.AddItem(new GUIContent("Add Dialogue Node"), false, () => OnClickAddNode(mousePosition));
-            genericMenu.ShowAsContext();
-        }
-
-        private void OnClickAddNode(Vector2 mousePosition)
-        {
-            DialogueNode dataNode = new DialogueNode(); // Create a new data node
-            var dialogueNodeEditor = new DialogueNodeEditor(mousePosition, 200, 100, nodeStyle, selectedNodeStyle, dataNode);
-            dialogueNodeEditor.OnRemoveNode += OnRemoveNode; // Subscribe to the remove event
-            nodes.Add(dialogueNodeEditor);
             if (dialogueTree != null)
             {
-                dialogueTree.nodes.Add(dataNode);
+                dialogueTree.nodes.Add(newNode);
+                var dialogueNodeEditor = new DialogueNodeEditor(position, 300, 100, nodeStyle, selectedNodeStyle, newNode); // Increased width to 300
+                dialogueNodeEditor.SetOnRemoveNode(OnRemoveNode); // Subscribe to the remove event
+                nodes.Add(dialogueNodeEditor);
+            }
+        }
+
+        private void RemoveSelectedNode()
+        {
+            if (selectedNode != null)
+            {
+                if (selectedNode is DialogueNodeEditor nodeEditor)
+                {
+                    RemoveNodeConnections(nodeEditor);
+                    dialogueTree.nodes.Remove(nodeEditor.dataNode);
+                    nodes.Remove(selectedNode);
+                    selectedNode = null;
+                }
             }
         }
 
         private void OnRemoveNode(BaseNode node)
         {
-            if (connections != null)
+            if (node is DialogueNodeEditor nodeEditor)
             {
-                List<NodeConnection> connectionsToRemove = new List<NodeConnection>();
-
-                foreach (var connection in connections)
-                {
-                    if (connection.startNode == node || connection.endNode == node)
-                    {
-                        connectionsToRemove.Add(connection);
-                    }
-                }
-
-                foreach (var connection in connectionsToRemove)
-                {
-                    connections.Remove(connection);
-                }
+                RemoveNodeConnections(nodeEditor);
+                dialogueTree.nodes.Remove(nodeEditor.dataNode);
             }
-
             nodes.Remove(node);
-            var dialogueNodeEditor = node as DialogueNodeEditor;
-            if (dialogueNodeEditor != null && dialogueTree != null)
-            {
-                dialogueTree.nodes.Remove(dialogueNodeEditor.dataNode);
-            }
         }
 
-        private void ProcessNodeEvents(Event e)
+        private void RemoveNodeConnections(DialogueNodeEditor nodeEditor)
         {
-            if (nodes != null)
+            // Remove all connections associated with this node
+            connections.RemoveAll(connection =>
+                connection.outNode == nodeEditor || connection.inNode == nodeEditor);
+
+            // Clear nextNodeId for options pointing to this node
+            foreach (var node in nodes)
             {
-                for (int i = nodes.Count - 1; i >= 0; i--)
+                if (node is DialogueNodeEditor editor)
                 {
-                    bool guiChanged = nodes[i].ProcessEvents(e);
-                    if (guiChanged)
+                    foreach (var option in editor.dataNode.options)
                     {
-                        GUI.changed = true;
+                        if (option.nextNodeId == nodeEditor.dataNode.id)
+                        {
+                            option.nextNodeId = null;
+                        }
                     }
                 }
             }
@@ -183,28 +145,115 @@ namespace DialogueSystemTool.Editor
             {
                 EditorUtility.SetDirty(dialogueTree);
                 AssetDatabase.SaveAssets();
-                AssetDatabase.Refresh();
             }
         }
 
         private void LoadDialogueTree()
         {
-            string path = EditorUtility.OpenFilePanel("Load Dialogue Tree", "Assets", "asset");
-            if (!string.IsNullOrEmpty(path))
+            var path = EditorUtility.OpenFilePanel("Select Dialogue Tree", "Assets", "asset");
+            if (path.StartsWith(Application.dataPath))
             {
                 path = "Assets" + path.Substring(Application.dataPath.Length);
                 dialogueTree = AssetDatabase.LoadAssetAtPath<DialogueTree>(path);
                 if (dialogueTree != null)
                 {
-                    nodes.Clear();
-                    connections.Clear();
-                    foreach (var dataNode in dialogueTree.nodes)
+                    LoadNodes();
+                }
+            }
+        }
+
+        private void LoadNodes()
+        {
+            nodes.Clear();
+            connections.Clear(); // Clear existing connections
+            if (dialogueTree != null)
+            {
+                foreach (var dataNode in dialogueTree.nodes)
+                {
+                    var dialogueNodeEditor = new DialogueNodeEditor(Vector2.zero, 300, 100, nodeStyle, selectedNodeStyle, dataNode); // Increased width to 300
+                    dialogueNodeEditor.SetOnRemoveNode(OnRemoveNode); // Subscribe to the remove event
+                    nodes.Add(dialogueNodeEditor);
+                }
+
+                // Recreate connections
+                foreach (var node in nodes)
+                {
+                    if (node is DialogueNodeEditor nodeEditor)
                     {
-                        var dialogueNodeEditor = new DialogueNodeEditor(Vector2.zero, 200, 100, nodeStyle, selectedNodeStyle, dataNode);
-                        dialogueNodeEditor.OnRemoveNode += OnRemoveNode; // Subscribe to the remove event
-                        nodes.Add(dialogueNodeEditor);
+                        foreach (var option in nodeEditor.dataNode.options)
+                        {
+                            if (!string.IsNullOrEmpty(option.nextNodeId))
+                            {
+                                var targetNode = nodes.Find(n => n is DialogueNodeEditor de && de.dataNode.id == option.nextNodeId) as DialogueNodeEditor;
+                                if (targetNode != null)
+                                {
+                                    CreateConnection(nodeEditor, targetNode, nodeEditor.dataNode.options.IndexOf(option));
+                                }
+                            }
+                        }
                     }
                 }
+            }
+        }
+
+        private void DrawNodes()
+        {
+            foreach (var node in nodes)
+            {
+                node.Draw();
+            }
+        }
+
+        private void DrawConnections()
+        {
+            foreach (var connection in connections)
+            {
+                connection.Draw();
+            }
+        }
+
+        private void ProcessNodeEvents(Event e)
+        {
+            for (int i = nodes.Count - 1; i >= 0; i--)
+            {
+                var guiChanged = nodes[i].ProcessEvents(e);
+                if (guiChanged)
+                {
+                    GUI.changed = true;
+                }
+            }
+        }
+
+        private void ProcessEvents(Event e)
+        {
+            switch (e.type)
+            {
+                case EventType.MouseDown:
+                    if (e.button == 0)
+                    {
+                        OnLeftMouseDown(e.mousePosition);
+                    }
+                    break;
+
+                case EventType.MouseDrag:
+                    if (e.button == 0 && selectedOutNodeEditor != null)
+                    {
+                        DragConnection(e.mousePosition);
+                        e.Use();
+                    }
+                    break;
+
+                case EventType.MouseUp:
+                    if (e.button == 0 && selectedOutNodeEditor != null)
+                    {
+                        var targetNode = nodes.Find(n => n.rect.Contains(e.mousePosition)) as DialogueNodeEditor;
+                        if (targetNode != null && selectedOutNodeEditor != targetNode)
+                        {
+                            CreateConnection(selectedOutNodeEditor, targetNode, selectedOutOptionIndex);
+                        }
+                        ClearConnectionSelection();
+                    }
+                    break;
             }
         }
 
@@ -225,16 +274,32 @@ namespace DialogueSystemTool.Editor
 
         private void DragConnection(Vector2 mousePosition)
         {
-            Handles.DrawBezier(
-                selectedOutNodeEditor.rect.center,
-                mousePosition,
-                selectedOutNodeEditor.rect.center + Vector2.left * 50f,
-                mousePosition - Vector2.left * 50f,
-                Color.white,
-                null,
-                2f
-            );
+            if (selectedOutNodeEditor != null)
+            {
+                var startPoint = selectedOutNodeEditor.GetOptionRectCenterRight(selectedOutOptionIndex);
+                Handles.DrawBezier(
+                    startPoint,
+                    mousePosition,
+                    startPoint + Vector2.right * 50f,
+                    mousePosition + Vector2.left * 50f,
+                    Color.white,
+                    null,
+                    2f
+                );
+            }
             GUI.changed = true;
+        }
+
+        private void OnLeftMouseDown(Vector2 mousePosition)
+        {
+            foreach (var node in nodes)
+            {
+                if (node.rect.Contains(mousePosition))
+                {
+                    selectedNode = node;
+                    break;
+                }
+            }
         }
 
         public void SetOptionTargetNode(DialogueNodeEditor nodeEditor, int optionIndex)

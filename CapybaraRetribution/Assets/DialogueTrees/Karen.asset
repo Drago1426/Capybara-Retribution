@@ -13,12 +13,15 @@ MonoBehaviour:
   m_Name: Karen
   m_EditorClassIdentifier: 
   nodes:
-  - id: dd1099d8-6b87-426b-aec1-3bac2eaee73f
+  - id: 6ba1f7bf-fc48-4a59-b0f2-074473a1d6e8
+    dialogueText: 
+    options: []
+  - id: 4534d438-91ac-4346-911b-4b403d8f38fc
     dialogueText: 
     options:
-    - optionText: dsfsdf
-      nextNodeId: 94d6c6a7-d55f-4a17-895b-3b8d30402ed8
+    - optionText: 
+      nextNodeId: 
       conditions: []
-  - id: 94d6c6a7-d55f-4a17-895b-3b8d30402ed8
+  - id: dd221bb0-01b2-407e-95b0-f388e7f179a5
     dialogueText: 
     options: []

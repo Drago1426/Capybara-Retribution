@@ -2,6 +2,9 @@
 
 namespace DialogueSystemTool.Data
 {
+    /// <summary>
+    /// Represents an option in a dialogue node.
+    /// </summary>
     [System.Serializable]
     public class DialogueOption
     {
