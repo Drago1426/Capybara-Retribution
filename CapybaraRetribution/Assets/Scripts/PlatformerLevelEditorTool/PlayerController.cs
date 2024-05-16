@@ -4,57 +4,56 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    [SerializeField] private float speed = 5.0f;
-    [SerializeField] private float jumpForce = 7.0f;
-    [SerializeField] private int maxHealth = 100;
+    // Serialized fields for movement parameters
+    [SerializeField]
+    private float moveSpeed = 5f;
+    
+    [SerializeField]
+    private float jumpForce = 5f;
 
+    // Private variables
     private Rigidbody2D rb;
-    private int currentHealth;
-    private bool isGrounded;
+    private bool facingRight = true;
 
     void Start()
     {
+        // Get the Rigidbody2D component
         rb = GetComponent<Rigidbody2D>();
-        currentHealth = maxHealth;
     }
 
     void Update()
     {
+        // Get horizontal input
         float moveInput = Input.GetAxis("Horizontal");
-        rb.velocity = new Vector2(moveInput * speed, rb.velocity.y);
-        
-        if (moveInput > 0)
+
+        // Move the player
+        rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
+
+        // Flip the player based on the direction of movement
+        if (moveInput > 0 && !facingRight)
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            Flip();
         }
-        else if (moveInput < 0)
+        else if (moveInput < 0 && facingRight)
         {
-            transform.localScale = new Vector3(-1, 1, 1);
+            Flip();
         }
-        
-        if (Input.GetKeyDown(KeyCode.Space) && isGrounded)
+
+        // Jump when the spacebar is pressed and the player is grounded
+        if (Input.GetKeyDown(KeyCode.Space) && Mathf.Abs(rb.velocity.y) < 0.01f)
         {
-            rb.AddForce(new Vector2(0, jumpForce), ForceMode2D.Impulse);
-            isGrounded = false;
+            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
         }
     }
 
-    void OnCollisionEnter2D(Collision2D other)
+    void Flip()
     {
-        if (other.gameObject.CompareTag("Ground"))
-        {
-            isGrounded = true;
-        }
-    }
+        // Switch the way the player is labelled as facing
+        facingRight = !facingRight;
 
-    public void TakeDamage(int damage)
-    {
-        currentHealth -= damage;
-        Debug.Log("Player Health: " + currentHealth);
-        
-        if (currentHealth <= 0)
-        {
-            Debug.Log("Player is dead!");
-        }
+        // Multiply the player's x local scale by -1
+        Vector3 theScale = transform.localScale;
+        theScale.x *= -1;
+        transform.localScale = theScale;
     }
 }

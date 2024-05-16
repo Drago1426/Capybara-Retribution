@@ -17,7 +17,7 @@ public class EnemyController : MonoBehaviour
             if (player != null)
             {
                 // Call the TakeDamage method on the player to reduce health
-                player.TakeDamage(damageAmount);
+                //player.TakeDamage(damageAmount);
                 Debug.Log("Enemy has collided with the player and dealt damage.");
             }
         }
