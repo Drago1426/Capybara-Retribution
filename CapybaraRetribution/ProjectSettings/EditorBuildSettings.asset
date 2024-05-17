@@ -23,4 +23,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Main Hub.unity
     guid: 521b6af8e9e895c4096abc79673eb354
+  - enabled: 1
+    path: Assets/Scenes/CharacterCreator2.unity
+    guid: 9d8940a4b78998240a3252619991b37a
+  - enabled: 1
+    path: Assets/Scenes/Level 1.unity
+    guid: ac2b1bfee0a7ea440841b38f45c21999
   m_configObjects: {}

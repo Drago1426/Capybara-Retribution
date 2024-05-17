@@ -34,8 +34,10 @@ public class CharacterCreator : MonoBehaviour
     private int hatIndex = 0;
     private int weaponIndex = 0;
 
+    private const string saveFilePath = "characterData.json";
     private void Start()
     {
+        LoadCharacter();
         UpdateCharacter();
     }
 
@@ -163,16 +165,9 @@ public class CharacterCreator : MonoBehaviour
         return false;
     }
 
-    public void UpdateCharacter(ScriptableObject eyeCollection, ScriptableObject furCollection, ScriptableObject hatCollection, ScriptableObject weaponCollection)
-    {
-        throw new System.NotImplementedException();
-    }
-
-    private const string saveFilePath = "characterData.json";
-
     public void SaveCharacter()
     {
-        CharacterData characterData = new CharacterData
+        CharacterData characterData = new CharacterData()
         {
             furIndex = furIndex,
             eyesIndex = eyesIndex,
@@ -180,7 +175,7 @@ public class CharacterCreator : MonoBehaviour
             weaponIndex = weaponIndex
         };
         string json = JsonUtility.ToJson(characterData);
-        File.WriteAllText(Path.Combine(Application.persistentDataPath, saveFilePath), json);
+        File.WriteAllText(Path.Combine(Application.persistentDataPath,saveFilePath),json);
     }
 
     public void LoadCharacter()
@@ -190,13 +185,18 @@ public class CharacterCreator : MonoBehaviour
         {
             string json = File.ReadAllText(fullPath);
             CharacterData characterData = JsonUtility.FromJson<CharacterData>(json);
-
+            
             furIndex = characterData.furIndex;
             eyesIndex = characterData.eyesIndex;
             hatIndex = characterData.hatIndex;
             weaponIndex = characterData.weaponIndex;
 
             UpdateCharacter();
-    } 
-    } 
+        }
+    }
+
+    public void UpdateCharacter(ScriptableObject eyeCollection, ScriptableObject furCollection, ScriptableObject hatCollection, ScriptableObject weaponCollection)
+    {
+        throw new System.NotImplementedException();
+    }
 }
