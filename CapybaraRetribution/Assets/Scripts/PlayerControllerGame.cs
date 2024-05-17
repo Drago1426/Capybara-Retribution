@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerController : MonoBehaviour
+public class PlayerControllerGame : MonoBehaviour
 {
     // Serialized fields for movement parameters
     [SerializeField]
@@ -83,6 +83,7 @@ public class PlayerController : MonoBehaviour
             PlaySound(jumpSound);
         }
         
+        // Check for the "X" key press to destroy enemies
         if (Input.GetKeyDown(KeyCode.X))
         {
             DestroyEnemyInFront();
@@ -139,7 +140,7 @@ public class PlayerController : MonoBehaviour
             audioSource.PlayOneShot(clip);
         }
     }
-    
+
     private void DestroyEnemyInFront()
     {
         // Determine the direction the player is facing
@@ -169,4 +170,3 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
-
