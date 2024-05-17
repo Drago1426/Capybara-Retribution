@@ -13,15 +13,48 @@ MonoBehaviour:
   m_Name: Karen
   m_EditorClassIdentifier: 
   nodes:
-  - id: 6ba1f7bf-fc48-4a59-b0f2-074473a1d6e8
-    dialogueText: 
-    options: []
-  - id: 4534d438-91ac-4346-911b-4b403d8f38fc
-    dialogueText: 
+  - id: 4d479f3a-21e6-4226-916a-c232fa61da94
+    dialogueText: Well, well. If it isn't trashybara.
     options:
-    - optionText: 
+    - optionText: I've been searching for you.
+      nextNodeId: 22b3fd0b-a0d2-448a-827f-e9c7a02d90d6
+      conditions: []
+    - optionText: Trashybara? Have you looked in the mirror lately?
+      nextNodeId: 7ab7fb53-917c-42f9-8a67-2f891f8baad8
+      conditions: []
+  - id: 22b3fd0b-a0d2-448a-827f-e9c7a02d90d6
+    dialogueText: Well, you've found me. What do you want?
+    options:
+    - optionText: Pretty hard to miss you, fatty.
+      nextNodeId: 4c7fe41a-cb02-4dff-a145-8d35fe0600eb
+      conditions: []
+    - optionText: I've come to get my revenge.
+      nextNodeId: ebf1a85b-37d4-4d0e-80f8-a3e7b6534ff1
+      conditions: []
+  - id: ebf1a85b-37d4-4d0e-80f8-a3e7b6534ff1
+    dialogueText: And how do you plan on doing that huh?
+    options:
+    - optionText: Introduce you to your maker. (Fight)
       nextNodeId: 
       conditions: []
-  - id: dd221bb0-01b2-407e-95b0-f388e7f179a5
-    dialogueText: 
+  - id: 4c7fe41a-cb02-4dff-a145-8d35fe0600eb
+    dialogueText: Never new such dumb animals had such rude mouths.
+    options:
+    - optionText: Cry about it (Sass)
+      nextNodeId: 
+      conditions: []
+    - optionText: Guess what, my feet are more! (Fight)
+      nextNodeId: 
+      conditions: []
+  - id: 7ab7fb53-917c-42f9-8a67-2f891f8baad8
+    dialogueText: Everyday sweetie. I'm very beautiful.
+    options:
+    - optionText: You won't think that as soon as I'm done with you.
+      nextNodeId: 4c7fe41a-cb02-4dff-a145-8d35fe0600eb
+      conditions: []
+    - optionText: Uhhh, no you aren't! (Death)
+      nextNodeId: d85c8973-d7c3-4bc7-b48d-3de9867bb128
+      conditions: []
+  - id: d85c8973-d7c3-4bc7-b48d-3de9867bb128
+    dialogueText: What a weak reply. *Player dies of embarassment*
     options: []
