@@ -88,18 +88,44 @@ namespace PlatformerLevelEditorTool
             GUIStyle headerStyle = new GUIStyle(GUI.skin.label) { fontSize = 20, fontStyle = FontStyle.Bold, alignment = TextAnchor.UpperCenter };
             GUILayout.Label("Platformer Level Editor Tool", headerStyle);
 
-            GUILayout.Space(10); // Adds a bit of spacing after the header
+            GUILayout.Space(10);
             
             GUILayout.Label("Select an item to place", EditorStyles.boldLabel);
             selectedItemIndex = EditorGUILayout.Popup("Item Type", selectedItemIndex, items);
 
-            if (selectedItemIndex == 2) // Tiles
+            if (selectedItemIndex == 2)
             {
                 selectedTile = EditorGUILayout.ObjectField("Select Tile", selectedTile, typeof(Tile), false) as Tile;
-                TilemapDrawTool.ActiveTile = selectedTile; // Update the active tile for the draw tool
+                TilemapDrawTool.ActiveTile = selectedTile;
 
                 if (GUILayout.Button("Activate Draw Tool"))
                 {
+                    if (selectedTile == null)
+                    {
+                        EditorUtility.DisplayDialog(
+                            "No Tile Selected",
+                            "Please select a tile before activating the draw tool.",
+                            "OK"
+                        );
+                        return;
+                    }
+                    
+                    if (tilemap == null)
+                    {
+                        tilemap = FindObjectOfType<Tilemap>();
+                        
+                        if (tilemap == null)
+                        {
+                            EditorUtility.DisplayDialog(
+                                "No Tilemap Found",
+                                "There is no Tilemap in the scene. Please add a Tilemap before activating the draw tool.",
+                                "OK"
+                            );
+                            return;
+                        }
+                    }
+                    
+                    Selection.activeGameObject = tilemap.gameObject;
                     ToolManager.SetActiveTool<TilemapDrawTool>();
                 }
             }
@@ -136,12 +162,15 @@ namespace PlatformerLevelEditorTool
         private void ApplyBackgroundChange()
         {
             if (currentBackground != null) DestroyImmediate(currentBackground);
-    
+
             currentBackground = new GameObject("Dynamic Background");
             var renderer = currentBackground.AddComponent<SpriteRenderer>();
             renderer.sprite = backgrounds[selectedBackgroundIndex];
             renderer.sortingLayerName = "Background"; // Ensure it renders behind other objects
             renderer.sortingOrder = -10;
+
+            // Attach the ParallaxBackground script to the new background GameObject
+            currentBackground.AddComponent<ParallaxBackground>();
         }
         
         void CreateGameObjectWithSprite()
@@ -165,6 +194,10 @@ namespace PlatformerLevelEditorTool
                 }
 
                 Debug.Log("Added: " + newObject.name + " with tag: " + newObject.tag);
+            }
+            else
+            {
+                EditorUtility.DisplayDialog("No Sprite Selected", "Please select a sprite.", "OK");
             }
         }
 
@@ -210,7 +243,9 @@ namespace PlatformerLevelEditorTool
             Rigidbody2D rb = playerObject.AddComponent<Rigidbody2D>();
             rb.constraints = RigidbodyConstraints2D.FreezeRotation;
 
-            playerObject.AddComponent<PlayerController>(); // Attach the PlayerController script
+            playerObject.AddComponent<PlayerController>();
+            AudioSource audioSource = playerObject.AddComponent<AudioSource>();
+            audioSource.playOnAwake = false;
 
             Debug.Log("Player placed in the game.");
         }
