@@ -9,37 +9,50 @@ public class PlayerController : MonoBehaviour
     private float moveSpeed = 5f;
     [SerializeField]
     private float jumpForce = 5f;
+    [SerializeField]
+    private float bounceBackForce = 5f;
+    [SerializeField]
+    private float flashDuration = 0.1f;
+    [SerializeField]
+    private int numberOfFlashes = 5;
+    [SerializeField]
+    private int maxHealth = 100;
 
     // Private variables for audio clips
+    [SerializeField]
     private AudioClip jumpSound;
+    [SerializeField]
     private AudioClip hurtSound;
     
     // Private variables
     private Rigidbody2D rb;
     private bool facingRight = true;
     private AudioSource audioSource;
+    private SpriteRenderer spriteRenderer;
+    private int currentHealth;
 
     void Start()
     {
         // Get the Rigidbody2D component
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
         
-        jumpSound = Resources.Load<AudioClip>("Audio/jumpSound");
-        hurtSound = Resources.Load<AudioClip>("Audio/hurtSound");
+        currentHealth = maxHealth;
         
-        if (jumpSound == null)
+        // Set Rigidbody2D collision detection to Continuous
+        rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
+
+        // Assign Physics Material 2D with zero friction to avoid getting stuck
+        Collider2D collider = GetComponent<Collider2D>();
+        if (collider != null)
         {
-            Debug.LogError("Failed to load jump sound from path: Resources/Audio/jumpSound.wav");
-        }
-        
-        if (hurtSound == null)
-        {
-            Debug.LogError("Failed to load hurt sound from path: Resources/Audio/hurtSound.wav");
+            collider.sharedMaterial = new PhysicsMaterial2D { friction = 0, bounciness = 0 };
         }
     }
 
@@ -79,6 +92,38 @@ public class PlayerController : MonoBehaviour
         theScale.x *= -1;
         transform.localScale = theScale;
     }
+
+    public void TakeDamage(int damage, Vector2 hitDirection)
+    {
+        currentHealth -= damage;
+        Debug.Log("Player Health: " + currentHealth);
+        PlaySound(hurtSound);
+
+        // Apply bounce back force
+        rb.velocity = Vector2.zero; // Reset velocity to make the bounce back consistent
+        rb.AddForce(hitDirection.normalized * bounceBackForce, ForceMode2D.Impulse);
+
+        // Start the flashing effect
+        StartCoroutine(Flash());
+
+        // Check for health depletion
+        if (currentHealth <= 0)
+        {
+            Debug.Log("Player is dead!");
+            // Implement what happens when the player's health reaches 0
+        }
+    }
+    
+    private IEnumerator Flash()
+    {
+        for (int i = 0; i < numberOfFlashes; i++)
+        {
+            spriteRenderer.color = new Color(1, 1, 1, 0); // Set sprite to transparent
+            yield return new WaitForSeconds(flashDuration);
+            spriteRenderer.color = new Color(1, 1, 1, 1); // Set sprite to opaque
+            yield return new WaitForSeconds(flashDuration);
+        }
+    }
     
     private void PlaySound(AudioClip clip)
     {
@@ -88,3 +133,4 @@ public class PlayerController : MonoBehaviour
         }
     }
 }
+

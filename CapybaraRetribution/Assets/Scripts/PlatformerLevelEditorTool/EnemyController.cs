@@ -4,8 +4,9 @@ using UnityEngine;
 
 public class EnemyController : MonoBehaviour
 {
-    public int damageAmount = 10;  // Amount of damage this enemy deals to the player
-
+    [SerializeField]
+    private int damageAmount = 10; 
+    
     void OnCollisionEnter2D(Collision2D collision)
     {
         // Check if the collision is with the player
@@ -16,8 +17,11 @@ public class EnemyController : MonoBehaviour
 
             if (player != null)
             {
+                // Calculate the hit direction
+                Vector2 hitDirection = (player.transform.position - transform.position).normalized;
+
                 // Call the TakeDamage method on the player to reduce health
-                //player.TakeDamage(damageAmount);
+                player.TakeDamage(damageAmount, hitDirection);
                 Debug.Log("Enemy has collided with the player and dealt damage.");
             }
         }
