@@ -41,6 +41,25 @@ namespace PlatformerLevelEditorTool
                 e.Use();
             }
         }
+        
+        public void OnDrawGizmos()
+        {
+            if (tilemap == null)
+            {
+                return;
+            }
+
+            Gizmos.color = Color.cyan;
+            for (int x = tilemap.cellBounds.xMin; x < tilemap.cellBounds.xMax; x++)
+            {
+                for (int y = tilemap.cellBounds.yMin; y < tilemap.cellBounds.yMax; y++)
+                {
+                    Vector3Int cellPosition = new Vector3Int(x, y, 0);
+                    Vector3 cellCenter = tilemap.GetCellCenterWorld(cellPosition);
+                    Gizmos.DrawWireCube(cellCenter, tilemap.cellSize);
+                }
+            }
+        }
     }
     
 
@@ -64,6 +83,7 @@ namespace PlatformerLevelEditorTool
         private Sprite[] backgrounds = new Sprite[3];
         private GameObject currentBackground;
         
+        private bool isPlacingItems = false;
 
         private void OnEnable()
         {
@@ -73,6 +93,12 @@ namespace PlatformerLevelEditorTool
             {
                 Debug.LogWarning("No Tilemap found in the scene.");
             }
+            SceneView.duringSceneGui += OnSceneGUI;
+        }
+        
+        private void OnDisable()
+        {
+            SceneView.duringSceneGui -= OnSceneGUI;
         }
         
         private void LoadBackgrounds()
@@ -140,9 +166,22 @@ namespace PlatformerLevelEditorTool
             else
             {
                 selectedSprite = EditorGUILayout.ObjectField("Select Sprite", selectedSprite, typeof(Sprite), false) as Sprite;
+                
                 if (GUILayout.Button("Add Item"))
                 {
-                    CreateGameObjectWithSprite();
+                    if (selectedSprite == null)
+                    {
+                        EditorUtility.DisplayDialog("No Sprite Selected", "Please select a sprite before adding items.", "OK");
+                    }
+                    else
+                    {
+                        isPlacingItems = true;
+                    }
+                }
+
+                if (isPlacingItems && GUILayout.Button("Stop Adding Items"))
+                {
+                    isPlacingItems = false;
                 }
             }
             
@@ -156,6 +195,24 @@ namespace PlatformerLevelEditorTool
             if (GUILayout.Button("Apply Background"))
             {
                 ApplyBackgroundChange();
+            }
+        }
+        
+        private void OnSceneGUI(SceneView sceneView)
+        {
+            if (!isPlacingItems || selectedSprite == null) return;
+
+            Event e = Event.current;
+            if (e.type == EventType.MouseDown && e.button == 0) // Left click to place item
+            {
+                Vector3 mousePosition = Event.current.mousePosition;
+                mousePosition.y = sceneView.camera.pixelHeight - mousePosition.y;
+                Vector3 worldPosition = sceneView.camera.ScreenToWorldPoint(mousePosition);
+                worldPosition.z = 0;
+
+                CreateGameObjectWithSprite(worldPosition);
+
+                e.Use();
             }
         }
 
@@ -173,7 +230,7 @@ namespace PlatformerLevelEditorTool
             currentBackground.AddComponent<ParallaxBackground>();
         }
         
-        void CreateGameObjectWithSprite()
+        void CreateGameObjectWithSprite(Vector3 position)
         {
             if (selectedSprite != null)
             {
@@ -181,6 +238,8 @@ namespace PlatformerLevelEditorTool
                 SpriteRenderer renderer = newObject.AddComponent<SpriteRenderer>();
                 renderer.sprite = selectedSprite;
                 newObject.tag = items[selectedItemIndex];
+                newObject.name = items[selectedItemIndex];
+                newObject.transform.position = position;
 
                 // Add components based on the type of the object
                 switch (newObject.tag)

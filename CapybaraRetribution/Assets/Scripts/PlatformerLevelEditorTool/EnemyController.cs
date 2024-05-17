@@ -26,4 +26,14 @@ public class EnemyController : MonoBehaviour
             }
         }
     }
+    
+    private void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red; // Set the gizmo color
+        Collider2D collider = GetComponent<Collider2D>();
+        if (collider != null)
+        {
+            Gizmos.DrawWireCube(collider.bounds.center, collider.bounds.size);
+        }
+    }
 }
