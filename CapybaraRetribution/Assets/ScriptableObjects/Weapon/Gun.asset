@@ -14,4 +14,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   weaponName: Glock
   weaponSprite: {fileID: 2048356056, guid: 6a3faae17ce565e47b10fdf4223201cf, type: 3}
-  damage: 0
+  damage: 5
