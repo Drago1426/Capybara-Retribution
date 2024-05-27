@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Yellow
   m_EditorClassIdentifier: 
   furName: Yellow
-  furSprite: {fileID: 2117893264, guid: a4f539bc8d5f89042bd0638a8955cdcc, type: 3}
+  furColor: {r: 0.7735849, g: 0.69547683, b: 0.22988607, a: 1}

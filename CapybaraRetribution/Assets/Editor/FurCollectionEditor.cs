@@ -64,7 +64,7 @@ public class FurCollectionEditor : Editor
 
                 Fur newFur = CreateInstance<Fur>();
                 newFur.furName = newItemNameField.value;
-                newFur.furSprite = (Sprite)newFurSpriteField.value;
+                //newFur.furSprite = (Sprite)newFurSpriteField.value;
 
                 // Save the new Fur as a ScriptableObject in the selected path
                 AssetDatabase.CreateAsset(newFur, path);

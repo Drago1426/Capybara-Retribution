@@ -4,5 +4,5 @@
 public class Fur : ScriptableObject
 {
     public string furName;
-    public Sprite furSprite;
+    public Color furColor;
 }

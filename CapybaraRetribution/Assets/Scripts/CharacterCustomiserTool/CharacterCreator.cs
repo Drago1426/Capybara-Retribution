@@ -41,30 +41,6 @@ public class CharacterCreator : MonoBehaviour
         UpdateCharacter();
     }
 
-    public void SelectFur(int index)
-    {
-        furIndex = index;
-        UpdateCharacter();
-    }
-
-    public void SelectEyes(int index)
-    {
-        eyesIndex = index;
-        UpdateCharacter();
-    }
-
-    public void SelectHat(int index)
-    {
-        hatIndex = index;
-        UpdateCharacter();
-    }
-
-    public void SelectWeapon(int index)
-    {
-        weaponIndex = index;
-        UpdateCharacter();
-    }
-
     public void NextFur()
     {
         furIndex = (furIndex + 1) % furOptions.items.Count;
@@ -128,7 +104,7 @@ public class CharacterCreator : MonoBehaviour
         selectedWeapon = weaponOptions.items[weaponIndex];
 
         // Currently Selected Asset
-        furRenderer.sprite = selectedFur.furSprite;
+        furRenderer.color = selectedFur.furColor;
         eyesRenderer.sprite = selectedEyes.eyesSprite;
         hatRenderer.sprite = selectedHat.hatSprite;
         weaponRenderer.sprite = selectedWeapon.weaponSprite;
