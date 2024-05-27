@@ -45,11 +45,10 @@ public class FurCollectionEditor : Editor
         newItemNameField.style.marginBottom = 8;
         root.Add(newItemNameField);
 
-        // ObjectField for selecting a sprite for the new Fur
-        var newFurSpriteField = new ObjectField("New Fur Sprite");
-        newFurSpriteField.objectType = typeof(Sprite);
-        newFurSpriteField.style.marginBottom = 8;
-        root.Add(newFurSpriteField);
+        // ColorField for selecting a color for the new Fur
+        var newFurColorField = new ColorField("New Fur Color");
+        newFurColorField.style.marginBottom = 8;
+        root.Add(newFurColorField);
 
         // Add button for new Fur items
         var addButton = new Button(() =>
@@ -64,7 +63,7 @@ public class FurCollectionEditor : Editor
 
                 Fur newFur = CreateInstance<Fur>();
                 newFur.furName = newItemNameField.value;
-                //newFur.furSprite = (Sprite)newFurSpriteField.value;
+                newFur.furColor = newFurColorField.value;
 
                 // Save the new Fur as a ScriptableObject in the selected path
                 AssetDatabase.CreateAsset(newFur, path);
@@ -73,7 +72,7 @@ public class FurCollectionEditor : Editor
                 furCollection.items.Add(newFur);
                 furCollection.bodyParts = furCollection.items; // Synchronize the lists
                 newItemNameField.value = "";
-                newFurSpriteField.value = null;
+                newFurColorField.value = new Color(1, 1, 1, 1);
 
                 // Refresh the ListView
                 listViewContainer.Clear();

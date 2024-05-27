@@ -34,7 +34,10 @@ using UnityEngine;
         private void ApplyCharacter(CharacterData characterData)
         {
             // Apply the saved assets
-            //furRenderer.sprite = furOptions.items[characterData.furIndex].furSprite;
+            Fur selectedFur = furOptions.items[characterData.furIndex];
+            furRenderer.color = selectedFur.furColor;
+            // Ensure you have a default sprite for the furRenderer, which is not changing per fur option
+
             eyesRenderer.sprite = eyesOptions.items[characterData.eyesIndex].eyesSprite;
             hatRenderer.sprite = hatOptions.items[characterData.hatIndex].hatSprite;
             weaponRenderer.sprite = weaponOptions.items[characterData.weaponIndex].weaponSprite;
