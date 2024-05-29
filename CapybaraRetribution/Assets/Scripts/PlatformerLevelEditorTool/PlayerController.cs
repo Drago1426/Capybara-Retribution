@@ -19,6 +19,8 @@ public class PlayerController : MonoBehaviour
     private int maxHealth = 100;
     [SerializeField]
     private float attackRange = 1;
+    [SerializeField]
+    private float invincibilityDuration = 2f;
 
     // Private variables for audio clips
     [SerializeField]
@@ -30,15 +32,15 @@ public class PlayerController : MonoBehaviour
     private Rigidbody2D rb;
     private bool facingRight = true;
     private AudioSource audioSource;
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer childSpriteRenderer;
     private int currentHealth;
+    private bool isInvincible = false;
 
     void Start()
     {
         // Get the Rigidbody2D component
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
-        spriteRenderer = GetComponent<SpriteRenderer>();
         
         if (audioSource == null)
         {
@@ -55,6 +57,17 @@ public class PlayerController : MonoBehaviour
         if (collider != null)
         {
             collider.sharedMaterial = new PhysicsMaterial2D { friction = 0, bounciness = 0 };
+        }
+        
+        // Find the child SpriteRenderer by index
+        if (transform.childCount > 0)
+        {
+            childSpriteRenderer = transform.GetChild(0).GetComponent<SpriteRenderer>();
+        }
+
+        if (childSpriteRenderer == null)
+        {
+            Debug.LogError("Child SpriteRenderer not found.");
         }
     }
 
@@ -102,16 +115,24 @@ public class PlayerController : MonoBehaviour
 
     public void TakeDamage(int damage, Vector2 hitDirection)
     {
+        if (isInvincible)
+        {
+            return;
+        }
+        
         currentHealth -= damage;
         Debug.Log("Player Health: " + currentHealth);
         PlaySound(hurtSound);
 
-        // Apply bounce back force
+        // Apply bounce back force on both X and Y axes
         rb.velocity = Vector2.zero; // Reset velocity to make the bounce back consistent
-        rb.AddForce(hitDirection.normalized * bounceBackForce, ForceMode2D.Impulse);
+        Vector2 bounceDirection = hitDirection.normalized * bounceBackForce;
 
+        rb.AddForce(bounceDirection, ForceMode2D.Impulse);
+        
         // Start the flashing effect
         StartCoroutine(Flash());
+        StartCoroutine(InvincibilityTimer());
 
         // Check for health depletion
         if (currentHealth <= 0)
@@ -125,12 +146,26 @@ public class PlayerController : MonoBehaviour
     {
         for (int i = 0; i < numberOfFlashes; i++)
         {
-            spriteRenderer.color = new Color(1, 1, 1, 0); // Set sprite to transparent
+            if (childSpriteRenderer != null)
+            {
+                childSpriteRenderer.enabled = false; // Disable the sprite renderer to make the sprite invisible
+            }
             yield return new WaitForSeconds(flashDuration);
-            spriteRenderer.color = new Color(1, 1, 1, 1); // Set sprite to opaque
+            if (childSpriteRenderer != null)
+            {
+                childSpriteRenderer.enabled = true; // Enable the sprite renderer to make the sprite visible
+            }
             yield return new WaitForSeconds(flashDuration);
         }
     }
+    
+    private IEnumerator InvincibilityTimer()
+    {
+        isInvincible = true;
+        yield return new WaitForSeconds(invincibilityDuration);
+        isInvincible = false;
+    }
+
     
     private void PlaySound(AudioClip clip)
     {

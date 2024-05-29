@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 1115112543097006513}
   - component: {fileID: 6721153475472166961}
   - component: {fileID: -7265096004525200302}
+  - component: {fileID: 8525480030046587549}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -150,8 +151,30 @@ MonoBehaviour:
   numberOfFlashes: 5
   maxHealth: 100
   attackRange: 1
+  invincibilityDuration: 2
   jumpSound: {fileID: 8300000, guid: d843665d2701b7246822385917271e83, type: 3}
   hurtSound: {fileID: 8300000, guid: 4d564b8168fab3649aab74364528309d, type: 3}
+--- !u!95 &8525480030046587549
+Animator:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3397982179482090824}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 0}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &314217397359296187
 PrefabInstance:
   m_ObjectHideFlags: 0
