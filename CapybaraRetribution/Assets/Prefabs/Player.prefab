@@ -13,7 +13,6 @@ GameObject:
   - component: {fileID: 1115112543097006513}
   - component: {fileID: 6721153475472166961}
   - component: {fileID: -7265096004525200302}
-  - component: {fileID: 8525480030046587549}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -31,7 +30,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -0.49, y: -1.61, z: -2.3391552}
-  m_LocalScale: {x: 1.3080113, y: 1.3080113, z: 1.3080113}
+  m_LocalScale: {x: 0.9102974, y: 0.9102974, z: 0.9102974}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 4225783678950925535}
@@ -122,10 +121,10 @@ BoxCollider2D:
   m_Offset: {x: 0.029218853, y: -0.27465874}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0, y: 0}
-    oldSize: {x: 0, y: 0}
-    newSize: {x: 0, y: 0}
-    adaptiveTilingThreshold: 0
+    pivot: {x: 0.5, y: 0.5}
+    oldSize: {x: 1.92, y: 2.56}
+    newSize: {x: 1.92, y: 2.56}
+    adaptiveTilingThreshold: 0.5
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
@@ -151,30 +150,8 @@ MonoBehaviour:
   numberOfFlashes: 5
   maxHealth: 100
   attackRange: 1
-  invincibilityDuration: 2
   jumpSound: {fileID: 8300000, guid: d843665d2701b7246822385917271e83, type: 3}
   hurtSound: {fileID: 8300000, guid: 4d564b8168fab3649aab74364528309d, type: 3}
---- !u!95 &8525480030046587549
-Animator:
-  serializedVersion: 5
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3397982179482090824}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!1001 &314217397359296187
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -260,7 +237,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3947510532761440852, guid: 7a0efd8e6ac5f1d44a3415eedbca4a77, type: 3}
       propertyPath: m_LocalPosition.y
-      value: -0.29
+      value: -1.23
       objectReference: {fileID: 0}
     - target: {fileID: 3947510532761440852, guid: 7a0efd8e6ac5f1d44a3415eedbca4a77, type: 3}
       propertyPath: m_LocalPosition.z
