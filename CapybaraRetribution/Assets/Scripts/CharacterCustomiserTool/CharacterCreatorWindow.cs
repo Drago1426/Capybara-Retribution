@@ -75,7 +75,7 @@ public class CharacterCreatorWindow : EditorWindow
             {
                 characterCreator.SaveCharacter();
                 // Load the next scene
-                EditorSceneManager.OpenScene("Assets/Scenes/NextScene.unity");
+                EditorSceneManager.OpenScene("Assets/Scenes/CharacterCreator2.unity");
             }
         }
     }
