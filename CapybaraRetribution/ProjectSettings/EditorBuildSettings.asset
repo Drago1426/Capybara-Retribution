@@ -32,4 +32,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/Instructions.unity
     guid: 90b954c712a27b14e934de4b648b1667
+  - enabled: 1
+    path: Assets/Scenes/TBC.unity
+    guid: ce539f76ae50be540b0b06b982599e1f
   m_configObjects: {}
