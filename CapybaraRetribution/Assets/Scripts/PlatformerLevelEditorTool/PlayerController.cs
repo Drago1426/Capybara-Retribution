@@ -1,6 +1,5 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,20 +17,21 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private int maxHealth = 100;
     [SerializeField]
-    private float attackRange = 1;
+    private float attackRange = 1f;
 
     // Private variables for audio clips
     [SerializeField]
     private AudioClip jumpSound;
     [SerializeField]
     private AudioClip hurtSound;
-    
+
     // Private variables
     private Rigidbody2D rb;
     private bool facingRight = true;
     private AudioSource audioSource;
     private SpriteRenderer spriteRenderer;
     private int currentHealth;
+    private Animator animator;
 
     void Start()
     {
@@ -39,14 +39,17 @@ public class PlayerController : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         audioSource = GetComponent<AudioSource>();
         spriteRenderer = GetComponent<SpriteRenderer>();
-        
+
+        // Get the Animator component from the child GameObject
+        animator = GetComponentInChildren<Animator>();
+
         if (audioSource == null)
         {
             audioSource = gameObject.AddComponent<AudioSource>();
         }
-        
+
         currentHealth = maxHealth;
-        
+
         // Set Rigidbody2D collision detection to Continuous
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
 
@@ -66,6 +69,12 @@ public class PlayerController : MonoBehaviour
         // Move the player
         rb.velocity = new Vector2(moveInput * moveSpeed, rb.velocity.y);
 
+        // Update the animator with movement information
+        if (animator != null)
+        {
+            animator.SetBool("isWalking", Mathf.Abs(moveInput) > 0.1f);
+        }
+
         // Flip the player based on the direction of movement
         if (moveInput > 0 && !facingRight)
         {
@@ -82,7 +91,7 @@ public class PlayerController : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
             PlaySound(jumpSound);
         }
-        
+
         if (Input.GetKeyDown(KeyCode.X))
         {
             DestroyEnemyInFront();
@@ -120,7 +129,7 @@ public class PlayerController : MonoBehaviour
             // Implement what happens when the player's health reaches 0
         }
     }
-    
+
     private IEnumerator Flash()
     {
         for (int i = 0; i < numberOfFlashes; i++)
@@ -131,7 +140,7 @@ public class PlayerController : MonoBehaviour
             yield return new WaitForSeconds(flashDuration);
         }
     }
-    
+
     private void PlaySound(AudioClip clip)
     {
         if (audioSource != null && clip != null)
@@ -139,7 +148,7 @@ public class PlayerController : MonoBehaviour
             audioSource.PlayOneShot(clip);
         }
     }
-    
+
     private void DestroyEnemyInFront()
     {
         // Determine the direction the player is facing
@@ -162,11 +171,22 @@ public class PlayerController : MonoBehaviour
 
             if (hit.collider.CompareTag("Enemy"))
             {
-                // Destroy the enemy
-                Destroy(hit.collider.gameObject);
-                Debug.Log("Enemy destroyed.");
+                // Try to get the EnemyController component
+                EnemyController enemy = hit.collider.GetComponent<EnemyController>();
+
+                if (enemy != null)
+                {
+                    // Call the Die method on the enemy
+                    enemy.Die();
+                    Debug.Log("Enemy destroyed.");
+                }
+                else
+                {
+                    // If no EnemyController is found, destroy the GameObject as a fallback
+                    Destroy(hit.collider.gameObject);
+                    Debug.Log("Enemy destroyed (fallback).");
+                }
             }
         }
     }
 }
-
