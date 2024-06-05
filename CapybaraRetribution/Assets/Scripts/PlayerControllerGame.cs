@@ -1,5 +1,4 @@
 using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class PlayerControllerGame : MonoBehaviour
@@ -106,6 +105,9 @@ public class PlayerControllerGame : MonoBehaviour
         currentHealth -= damage;
         Debug.Log("Player Health: " + currentHealth);
         PlaySound(hurtSound);
+
+        // Update health in HealthScript
+        HealthScript.Instance.TakeDamage(damage);
 
         // Apply bounce back force
         rb.velocity = Vector2.zero; // Reset velocity to make the bounce back consistent

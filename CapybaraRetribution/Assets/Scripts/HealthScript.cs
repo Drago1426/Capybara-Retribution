@@ -37,7 +37,7 @@ public class HealthScript : MonoBehaviour
 
     private void SavePlayerHealth()
     {
-        PlayerData data = new PlayerData {currentHealth = this._currentHealth};
+        PlayerData data = new PlayerData { currentHealth = this._currentHealth };
         string json = JsonUtility.ToJson(data);
         PlayerPrefs.SetString("PlayerData", json);
         PlayerPrefs.Save();
@@ -63,4 +63,3 @@ public class HealthScript : MonoBehaviour
         SavePlayerHealth();
     }
 }
-

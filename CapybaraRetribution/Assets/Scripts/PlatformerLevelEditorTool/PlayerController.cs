@@ -1,4 +1,6 @@
+using TMPro;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using System.Collections;
 
 public class PlayerController : MonoBehaviour
@@ -25,6 +27,10 @@ public class PlayerController : MonoBehaviour
     [SerializeField]
     private AudioClip hurtSound;
 
+    // Reference to the TextMeshPro UI element
+    [SerializeField]
+    private TextMeshProUGUI healthText;
+
     // Private variables
     private Rigidbody2D rb;
     private bool facingRight = true;
@@ -49,6 +55,7 @@ public class PlayerController : MonoBehaviour
         }
 
         currentHealth = maxHealth;
+        UpdateHealthUI();
 
         // Set Rigidbody2D collision detection to Continuous
         rb.collisionDetectionMode = CollisionDetectionMode2D.Continuous;
@@ -126,8 +133,12 @@ public class PlayerController : MonoBehaviour
         if (currentHealth <= 0)
         {
             Debug.Log("Player is dead!");
-            // Implement what happens when the player's health reaches 0
+            // Load Game Over Scene
+            SceneManager.LoadScene("GameOver");
         }
+
+        // Update health UI
+        UpdateHealthUI();
     }
 
     private IEnumerator Flash()
@@ -187,6 +198,14 @@ public class PlayerController : MonoBehaviour
                     Debug.Log("Enemy destroyed (fallback).");
                 }
             }
+        }
+    }
+
+    private void UpdateHealthUI()
+    {
+        if (healthText != null)
+        {
+            healthText.text = "Health: " + currentHealth;
         }
     }
 }
