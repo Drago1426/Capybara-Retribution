@@ -12,4 +12,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 616250fb002842718f4d4e5f2d0c9e70, type: 3}
   m_Name: DeeDee
   m_EditorClassIdentifier: 
-  nodes: []
+  nodes:
+  - id: 4d77067b-ca6d-4901-8771-3286685b6ba2
+    dialogueText: Hello Capybara!
+    options:
+    - optionText: Hello Dodo Bird
+      nextNodeId: 19eb703e-c7ed-4528-968d-71db205b5513
+    - optionText: Goodbye Dodo Bird
+      nextNodeId: 65060f88-4ddb-4eb7-aac2-1ab7815e2b16
+  - id: 19eb703e-c7ed-4528-968d-71db205b5513
+    dialogueText: How are you?
+    options:
+    - optionText: Really good!
+      nextNodeId: 4647805c-dfa4-4b65-b9dc-d56daff8b689
+    - optionText: Meh
+      nextNodeId: 52585f94-a611-4dd2-8b86-8f04c0c77ca3
+  - id: 4647805c-dfa4-4b65-b9dc-d56daff8b689
+    dialogueText: That's great!
+    options:
+    - optionText: I know right!
+      nextNodeId: f1a7674f-5404-4088-b56d-557bcb1a1248
+  - id: 52585f94-a611-4dd2-8b86-8f04c0c77ca3
+    dialogueText: Aweh, that sucks.
+    options:
+    - optionText: Yeah, I know
+      nextNodeId: 2cfb412d-8aee-4abc-8197-65229a0fe25e
+  - id: 65060f88-4ddb-4eb7-aac2-1ab7815e2b16
+    dialogueText: 
+    options: []
+  - id: 2cfb412d-8aee-4abc-8197-65229a0fe25e
+    dialogueText: 
+    options: []
+  - id: f1a7674f-5404-4088-b56d-557bcb1a1248
+    dialogueText: 
+    options: []
